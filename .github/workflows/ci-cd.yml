@@ -54,15 +54,17 @@ jobs:
           mkdir -p Release
           Copy-Item -Path "build\windows\x64\runner\Release\*" -Destination "Release\" -Recurse -Force
 
+      - name: Install Inno Setup
+        run: |
+          winget install --id JRSoftware.InnoSetup -e --silent --accept-package-agreements --accept-source-agreements
+
       - name: Create Installer with Inno Setup
-        uses: jakejarvis/inno-setup-action@master
-        with:
-          version: '6.2'
-          path: installer/installer.iss
+        run: |
+          & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" installer/installer.iss
 
       - name: Rename installer
         run: |
-          Move-Item -Path "Output\Equily-Setup-*.exe" -Destination "Equily-Setup-${{ github.ref_name }}.exe" -Force
+          Get-ChildItem -Path "Output" -Filter "*.exe" | ForEach-Object { Move-Item -Path $_.FullName -Destination "Equily-Setup-${{ github.ref_name }}.exe" -Force }
 
       - name: Upload Windows installer
         uses: actions/upload-artifact@v4
