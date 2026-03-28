@@ -1,20 +1,2 @@
-# Shorebird Configuration
-# Run `shorebird init` to configure this file for your project
-
 app_id: equily-assistent
-version: 1.0.0
-
-# Channel for releasing updates
-# Options: stable, beta, alpha, or custom
-channel: stable
-
-# Auto-update settings
 auto_update: true
-
-# Platforms to support
-platforms:
-  - android
-  - ios
-  - macos
-  - windows
-  - linux
