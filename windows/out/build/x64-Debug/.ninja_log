@@ -1,0 +1,15 @@
+# ninja log v6
+7	22016	7964073863394188	C:/Users/PC/Documents/Equilyv2/windows/flutter/ephemeral/flutter_windows.dll	70ad73e465c396a2
+7	22016	7964073863394188	C:/Users/PC/Documents/Equilyv2/windows/flutter/ephemeral/flutter_export.h	70ad73e465c396a2
+7	22016	7964073863394188	C:/Users/PC/Documents/Equilyv2/windows/flutter/ephemeral/flutter_windows.h	70ad73e465c396a2
+7	22016	7964073863394188	C:/Users/PC/Documents/Equilyv2/windows/flutter/ephemeral/flutter_messenger.h	70ad73e465c396a2
+7	22016	7964073863394188	C:/Users/PC/Documents/Equilyv2/windows/flutter/ephemeral/flutter_plugin_registrar.h	70ad73e465c396a2
+7	22016	7964073863394188	C:/Users/PC/Documents/Equilyv2/windows/flutter/ephemeral/flutter_texture_registrar.h	70ad73e465c396a2
+7	22016	7964073863394188	C:/Users/PC/Documents/Equilyv2/windows/flutter/ephemeral/cpp_client_wrapper/core_implementations.cc	70ad73e465c396a2
+7	22016	7964073863394188	C:/Users/PC/Documents/Equilyv2/windows/flutter/ephemeral/cpp_client_wrapper/standard_codec.cc	70ad73e465c396a2
+7	22016	7964073863394188	C:/Users/PC/Documents/Equilyv2/windows/flutter/ephemeral/cpp_client_wrapper/plugin_registrar.cc	70ad73e465c396a2
+7	22016	7964073863394188	C:/Users/PC/Documents/Equilyv2/windows/flutter/ephemeral/cpp_client_wrapper/flutter_engine.cc	70ad73e465c396a2
+7	22016	7964073863394188	C:/Users/PC/Documents/Equilyv2/windows/flutter/ephemeral/cpp_client_wrapper/flutter_view_controller.cc	70ad73e465c396a2
+7	22016	7964073863394188	flutter/_phony_	70ad73e465c396a2
+7	22016	7964073863394188	C:/Users/PC/Documents/Equilyv2/windows/out/build/x64-Debug/flutter/_phony_	70ad73e465c396a2
+22042	22108	7964074083688045	runner/CMakeFiles/equily_assistent.dir/Runner.rc.res	be9133d8c0dda7cb
