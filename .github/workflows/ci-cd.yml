@@ -49,15 +49,26 @@ jobs:
       - run: flutter pub get
       - run: flutter build windows --release
 
-      - name: Create installer ZIP
+      - name: Create Release folder
         run: |
-          powershell -Command "Compress-Archive -Path 'build\windows\x64\runner\Release\*' -DestinationPath 'Equily-windows-${{ github.ref_name }}.zip' -Force"
+          mkdir -p Release
+          cp -r build/windows/x64/runner/Release/* Release/
 
-      - name: Upload Windows artifacts
+      - name: Create Installer with Inno Setup
+        uses: rcjohnson/inno-setup-action@master
+        with:
+          version: 6.2
+          path: installer/installer.iss
+
+      - name: Rename installer
+        run: |
+          mv Output/Equily-Setup-*.exe Equily-Setup-${{ github.ref_name }}.exe
+
+      - name: Upload Windows installer
         uses: actions/upload-artifact@v4
         with:
-          name: windows-build
-          path: Equily-windows-${{ github.ref_name }}.zip
+          name: windows-installer
+          path: Equily-Setup-${{ github.ref_name }}.exe
 
   build-macos:
     name: Build macOS
