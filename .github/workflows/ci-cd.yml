@@ -55,9 +55,9 @@ jobs:
           Copy-Item -Path "build\windows\x64\runner\Release\*" -Destination "Release\" -Recurse -Force
 
       - name: Create Installer with Inno Setup
-        uses: rcjohnson/inno-setup-action@master
+        uses: jakejarvis/inno-setup-action@master
         with:
-          version: 6.2
+          version: '6.2'
           path: installer/installer.iss
 
       - name: Rename installer
