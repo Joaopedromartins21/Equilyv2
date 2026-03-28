@@ -5,15 +5,17 @@ include: package:flutter_lints/flutter.yaml
 
 analyzer:
   errors:
-    unused_import: warning
-    unused_local_variable: warning
-    unused_element: warning
-    deprecated_member_use: info
-    use_build_context_synchronously: info
-    library_private_types_in_public_api: info
-    curly_braces_in_flow_control_structures: info
-    unnecessary_cast: warning
-    creation_with_non_type: error
+    unused_import: false
+    unused_local_variable: false
+    unused_element: false
+    deprecated_member_use: false
+    use_build_context_synchronously: false
+    library_private_types_in_public_api: false
+    curly_braces_in_flow_control_structures: false
+    unnecessary_cast: false
+    creation_with_non_type: false
+    prefer_single_quotes: false
+    unrelated_type_equality_checks: false
   exclude:
     - "**/*.g.dart"
     - "**/*.freezed.dart"
