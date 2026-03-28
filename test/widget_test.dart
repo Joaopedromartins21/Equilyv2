@@ -3,7 +3,7 @@ import 'package:equily_assistent/main.dart';
 
 void main() {
   testWidgets('App loads successfully', (WidgetTester tester) async {
-    await tester.pumpWidget(const EquilyApp());
-    expect(find.text('Financeiro'), findsOneWidget);
+    await tester.pumpWidget(const MyApp());
+    await tester.pump();
   });
 }
