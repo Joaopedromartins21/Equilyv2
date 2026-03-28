@@ -54,9 +54,9 @@ jobs:
           mkdir -p Release
           Copy-Item -Path "build\windows\x64\runner\Release\*" -Destination "Release\" -Recurse -Force
 
-      - name: Install Inno Setup
+      - name: Install Inno Setup (ignore if already installed)
         run: |
-          winget install --id JRSoftware.InnoSetup -e --silent --accept-package-agreements --accept-source-agreements
+          winget install --id JRSoftware.InnoSetup -e --silent --accept-package-agreements --accept-source-agreements --force 2>$null; exit 0
 
       - name: Create Installer with Inno Setup
         run: |
