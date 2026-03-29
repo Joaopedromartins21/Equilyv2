@@ -1,7 +1,7 @@
 ; Equily Inno Setup Script
 
 #define MyAppName "Equily"
-#define MyAppVersion "1.2.0"
+#define MyAppVersion "1.2.1"
 #define MyAppPublisher "Equily"
 #define MyAppExeName "equily_assistent.exe"
 #define MyAppURL "https://github.com/Joaopedromartins21/Equilyv2"

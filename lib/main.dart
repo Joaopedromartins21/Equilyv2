@@ -767,7 +767,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       color: Color(0xFF6C63FF),
                     ),
                     title: const Text('Sobre'),
-                    subtitle: const Text('Versão 1.2.0'),
+                    subtitle: const Text('Versão 1.2.1'),
                     trailing: const Icon(Icons.chevron_right),
                     onTap: () {},
                   ),
