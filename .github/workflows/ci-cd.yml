@@ -119,12 +119,14 @@ jobs:
 
       - name: Install Shorebird
         uses: shorebirdtech/setup-shorebird@v1
+        with:
+          version: ${{ env.FLUTTER_VERSION }}
 
       - run: flutter pub get
       - run: flutter build windows --release
 
       - name: Create Shorebird Release
-        run: shorebird release windows
+        run: shorebird release windows --release-version ${{ github.ref_name }}
         env:
           SHOREBIRD_TOKEN: ${{ secrets.SHOREBIRD_TOKEN }}
 
@@ -147,10 +149,12 @@ jobs:
 
       - name: Install Shorebird
         uses: shorebirdtech/setup-shorebird@v1
+        with:
+          version: ${{ env.FLUTTER_VERSION }}
 
       - run: flutter pub get
 
       - name: Create Shorebird Patch
-        run: shorebird patch windows
+        run: shorebird patch windows --release-version ${{ github.ref_name }}
         env:
           SHOREBIRD_TOKEN: ${{ secrets.SHOREBIRD_TOKEN }}
