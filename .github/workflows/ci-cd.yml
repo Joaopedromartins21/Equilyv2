@@ -57,7 +57,7 @@ jobs:
           New-Item -ItemType Directory -Force -Path Release,Output | Out-Null
           Copy-Item -Path "build\windows\x64\runner\Release\*" -Destination "Release\" -Recurse -Force
 
-      - name: Install Inno Setup (ignore if already installed)
+      - name: Install Inno Setup
         run: |
           winget install --id JRSoftware.InnoSetup -e --silent --accept-package-agreements --accept-source-agreements --force 2>$null; exit 0
 
@@ -67,13 +67,14 @@ jobs:
 
       - name: Rename installer
         run: |
-          Get-ChildItem -Path "Output" -Filter "*.exe" | ForEach-Object { Move-Item -Path $_.FullName -Destination "Equily-Setup-${{ github.ref_name }}.exe" -Force }
+          $version = ${{ github.ref_name }}
+          Get-ChildItem -Path "Output" -Filter "*.exe" | ForEach-Object { Move-Item -Path $_.FullName -Destination "Equily-Setup-$version.exe" -Force }
 
       - name: Upload Windows installer
         uses: actions/upload-artifact@v4
         with:
           name: windows-installer
-          path: Equily-Setup-${{ github.ref_name }}.exe
+          path: Equily-Setup-*.exe
 
   release:
     name: Create Release
@@ -99,11 +100,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  shorebird-patch:
-    name: Shorebird Patch
+  shorebird-release:
+    name: Shorebird Release
     runs-on: windows-latest
     needs: build-windows
-    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/tags/v'))
+    if: startsWith(github.ref, 'refs/tags/v')
     steps:
       - uses: actions/checkout@v4
 
@@ -122,7 +123,34 @@ jobs:
       - run: flutter pub get
       - run: flutter build windows --release
 
-      - name: Create Shorebird patch
+      - name: Create Shorebird Release
+        run: shorebird release windows
+        env:
+          SHOREBIRD_TOKEN: ${{ secrets.SHOREBIRD_TOKEN }}
+
+  shorebird-patch:
+    name: Shorebird Patch
+    runs-on: windows-latest
+    needs: shorebird-release
+    if: startsWith(github.ref, 'refs/tags/v')
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+
+      - name: Install Shorebird
+        uses: shorebirdtech/setup-shorebird@v1
+
+      - run: flutter pub get
+
+      - name: Create Shorebird Patch
         run: shorebird patch windows
         env:
           SHOREBIRD_TOKEN: ${{ secrets.SHOREBIRD_TOKEN }}
