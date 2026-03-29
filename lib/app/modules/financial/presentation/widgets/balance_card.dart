@@ -16,39 +16,33 @@ class BalanceCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
           colors: [AppTheme.primaryColor, Color(0xFF8B7CF6)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: AppTheme.primaryColor.withValues(alpha: 0.3),
-            blurRadius: 20,
-            offset: const Offset(0, 10),
-          ),
-        ],
+        borderRadius: BorderRadius.circular(4),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const Text(
             'Saldo Total',
-            style: TextStyle(color: Colors.white70, fontSize: 14),
+            style: TextStyle(color: Colors.white70, fontSize: 11),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 4),
           Text(
             'R\$ ${balance.toStringAsFixed(2)}',
             style: const TextStyle(
               color: Colors.white,
-              fontSize: 32,
+              fontSize: 22,
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 8),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -75,26 +69,27 @@ class BalanceCard extends StatelessWidget {
     return Row(
       children: [
         Container(
-          padding: const EdgeInsets.all(8),
+          padding: const EdgeInsets.all(4),
           decoration: BoxDecoration(
             color: Colors.white.withValues(alpha: 0.2),
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(3),
           ),
-          child: Icon(icon, color: color, size: 20),
+          child: Icon(icon, color: color, size: 14),
         ),
-        const SizedBox(width: 8),
+        const SizedBox(width: 6),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               label,
-              style: const TextStyle(color: Colors.white70, fontSize: 12),
+              style: const TextStyle(color: Colors.white70, fontSize: 10),
             ),
             Text(
               'R\$ ${value.toStringAsFixed(2)}',
               style: const TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.w600,
+                fontSize: 11,
               ),
             ),
           ],

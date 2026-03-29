@@ -114,7 +114,7 @@ class _AddTransactionSheetState extends State<AddTransactionSheet> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
       child: Container(
         width: 550,
         padding: const EdgeInsets.all(24),
@@ -235,7 +235,7 @@ class _AddTransactionSheetState extends State<AddTransactionSheet> {
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
                     color: AppTheme.primaryColor.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(4),
                   ),
                   child: Row(
                     children: [
@@ -299,7 +299,7 @@ class _AddTransactionSheetState extends State<AddTransactionSheet> {
                                   border: Border.all(
                                     color: Colors.grey.shade300,
                                   ),
-                                  borderRadius: BorderRadius.circular(12),
+                                  borderRadius: BorderRadius.circular(4),
                                 ),
                                 child: Row(
                                   children: [
@@ -396,7 +396,7 @@ class _AddTransactionSheetState extends State<AddTransactionSheet> {
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
                       color: Colors.green.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(4),
                       border: Border.all(
                         color: Colors.green.withValues(alpha: 0.3),
                       ),
@@ -472,7 +472,7 @@ class _AddTransactionSheetState extends State<AddTransactionSheet> {
         padding: const EdgeInsets.symmetric(vertical: 12),
         decoration: BoxDecoration(
           color: isSelected ? color : Colors.grey.shade100,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(4),
         ),
         child: Center(
           child: Text(

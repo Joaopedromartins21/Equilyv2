@@ -18,35 +18,36 @@ class TransactionTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final isIncome = transaction.type == TransactionTypeModel.income;
     return Card(
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: const EdgeInsets.only(bottom: 6),
       color: isSelected ? AppTheme.primaryColor.withValues(alpha: 0.05) : null,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(4),
         side: isSelected
-            ? const BorderSide(color: AppTheme.primaryColor, width: 2)
-            : BorderSide.none,
+            ? const BorderSide(color: AppTheme.primaryColor, width: 1)
+            : BorderSide(color: Colors.grey.shade200),
       ),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(4),
         child: Padding(
-          padding: const EdgeInsets.all(12),
+          padding: const EdgeInsets.all(10),
           child: Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(10),
+                padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
                   color: _getCategoryColor(
                     transaction.category,
                   ).withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(4),
                 ),
                 child: Icon(
                   _getCategoryIcon(transaction.category),
                   color: _getCategoryColor(transaction.category),
+                  size: 18,
                 ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: 10),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -55,23 +56,26 @@ class TransactionTile extends StatelessWidget {
                       children: [
                         Text(
                           transaction.title,
-                          style: const TextStyle(fontWeight: FontWeight.w600),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 13,
+                          ),
                         ),
                         if (transaction.isInstallment) ...[
-                          const SizedBox(width: 8),
+                          const SizedBox(width: 6),
                           Container(
                             padding: const EdgeInsets.symmetric(
-                              horizontal: 6,
-                              vertical: 2,
+                              horizontal: 4,
+                              vertical: 1,
                             ),
                             decoration: BoxDecoration(
                               color: Colors.orange.withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(4),
+                              borderRadius: BorderRadius.circular(3),
                             ),
                             child: Text(
                               '${transaction.installmentCurrent}/${transaction.installmentTotal}x',
                               style: const TextStyle(
-                                fontSize: 10,
+                                fontSize: 9,
                                 color: Colors.orange,
                                 fontWeight: FontWeight.w500,
                               ),
@@ -84,7 +88,7 @@ class TransactionTile extends StatelessWidget {
                       _formatDate(transaction.date),
                       style: TextStyle(
                         color: Colors.grey.shade600,
-                        fontSize: 12,
+                        fontSize: 11,
                       ),
                     ),
                   ],
@@ -93,7 +97,8 @@ class TransactionTile extends StatelessWidget {
               Text(
                 '${isIncome ? '+' : '-'} R\$ ${transaction.amount.toStringAsFixed(2)}',
                 style: TextStyle(
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 13,
                   color: isIncome
                       ? AppTheme.secondaryColor
                       : AppTheme.errorColor,

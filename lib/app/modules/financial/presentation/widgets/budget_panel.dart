@@ -32,7 +32,7 @@ class BudgetPanel extends StatelessWidget {
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(4),
                 ),
                 child: Row(
                   children: [
@@ -229,7 +229,7 @@ class _BudgetCard extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(4),
         border: isOver ? Border.all(color: Colors.red, width: 2) : null,
       ),
       child: Column(

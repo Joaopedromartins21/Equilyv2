@@ -13,90 +13,143 @@ class RecurringPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final recurring = DatabaseService.recurring.values.toList();
+    final activeCount = recurring.where((r) => r.isActive).length;
     final monthlyTotal = recurring
         .where((r) => r.isActive && r.type == 'expense')
         .fold(0.0, (sum, r) => sum + r.amount);
 
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          child: Column(
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          Row(
             children: [
               Container(
+                width: 400,
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
                     colors: [Colors.orange, Color(0xFFFF8C42)],
                   ),
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(4),
                 ),
-                child: Row(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Gastos Fixos Mensais',
-                          style: TextStyle(color: Colors.white70, fontSize: 14),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'R\$ ${monthlyTotal.toStringAsFixed(2)}',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 28,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          '${recurring.where((r) => r.isActive).length} transações ativas',
-                          style: const TextStyle(
-                            color: Colors.white70,
-                            fontSize: 12,
-                          ),
-                        ),
-                      ],
+                    const Text(
+                      'Gastos Fixos Mensais',
+                      style: TextStyle(color: Colors.white70, fontSize: 14),
                     ),
-                    const Spacer(),
-                    ElevatedButton.icon(
-                      onPressed: () => _showAddRecurringDialog(context),
-                      icon: const Icon(Icons.add),
-                      label: const Text('Novo Gasto Fixo'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        foregroundColor: Colors.orange,
+                    const SizedBox(height: 8),
+                    Text(
+                      'R\$ ${monthlyTotal.toStringAsFixed(2)}',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      '$activeCount ativos',
+                      style: const TextStyle(
+                        color: Colors.white70,
+                        fontSize: 12,
                       ),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(height: 24),
-              Expanded(
-                child: recurring.isEmpty
-                    ? _buildEmptyState(context)
-                    : GridView.builder(
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 3,
-                              crossAxisSpacing: 16,
-                              mainAxisSpacing: 16,
-                              childAspectRatio: 2.2,
-                            ),
-                        itemCount: recurring.length,
-                        itemBuilder: (context, index) {
-                          return _RecurringCard(
-                            recurring: recurring[index],
-                            onRefresh: onRefresh,
-                          );
-                        },
-                      ),
+              const SizedBox(width: 16),
+              Column(
+                children: [
+                  _buildQuickStat(
+                    'Ativos',
+                    activeCount.toString(),
+                    Icons.check_circle,
+                    Colors.green,
+                  ),
+                  const SizedBox(height: 8),
+                  _buildQuickStat(
+                    'Inativos',
+                    (recurring.length - activeCount).toString(),
+                    Icons.pause_circle,
+                    Colors.grey,
+                  ),
+                ],
+              ),
+              const Spacer(),
+              ElevatedButton.icon(
+                onPressed: () => _showAddRecurringDialog(context),
+                icon: const Icon(Icons.add, size: 18),
+                label: const Text('Novo Gasto Fixo'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.orange,
+                  foregroundColor: Colors.white,
+                ),
               ),
             ],
           ),
-        ),
-      ],
+          const SizedBox(height: 24),
+          recurring.isEmpty
+              ? _buildEmptyState(context)
+              : GridView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3,
+                    crossAxisSpacing: 16,
+                    mainAxisSpacing: 16,
+                    childAspectRatio: 2.2,
+                  ),
+                  itemCount: recurring.length,
+                  itemBuilder: (context, index) {
+                    return _RecurringCard(
+                      recurring: recurring[index],
+                      onRefresh: onRefresh,
+                    );
+                  },
+                ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildQuickStat(
+    String title,
+    String value,
+    IconData icon,
+    Color color,
+  ) {
+    return Container(
+      width: 150,
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(4),
+        border: Border.all(color: Colors.grey.shade200),
+      ),
+      child: Row(
+        children: [
+          Icon(icon, color: color, size: 20),
+          const SizedBox(width: 8),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: TextStyle(fontSize: 11, color: Colors.grey.shade600),
+              ),
+              Text(
+                value,
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 
@@ -264,7 +317,7 @@ class _RecurringCard extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(4),
         border: recurring.isActive
             ? null
             : Border.all(color: Colors.grey.shade300),

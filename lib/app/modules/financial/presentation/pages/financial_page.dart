@@ -236,59 +236,61 @@ class _FinancialPageState extends State<FinancialPage>
             const Text(
               'Financeiro',
               style: TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
+                fontSize: 24,
+                fontWeight: FontWeight.w600,
                 color: AppTheme.textPrimary,
               ),
             ),
+            const SizedBox(height: 2),
             Text(
               'Visão geral das suas finanças',
-              style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
+              style: TextStyle(fontSize: 13, color: Colors.grey.shade600),
             ),
           ],
         ),
         const Spacer(),
         SizedBox(
-          width: 300,
+          width: 250,
           child: TextField(
             onChanged: (v) => setState(() => _searchQuery = v),
             decoration: InputDecoration(
               hintText: 'Buscar transações...',
-              prefixIcon: const Icon(Icons.search),
+              prefixIcon: const Icon(Icons.search, size: 18),
+              isDense: true,
               filled: true,
               fillColor: Colors.white,
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(4),
                 borderSide: BorderSide.none,
               ),
             ),
           ),
         ),
-        const SizedBox(width: 16),
+        const SizedBox(width: 12),
         OutlinedButton.icon(
           onPressed: _showTransferDialog,
-          icon: const Icon(Icons.swap_horiz),
+          icon: const Icon(Icons.swap_horiz, size: 18),
           label: const Text('Transferir'),
           style: OutlinedButton.styleFrom(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
           ),
         ),
-        const SizedBox(width: 12),
+        const SizedBox(width: 8),
         OutlinedButton.icon(
           onPressed: _exportReport,
-          icon: const Icon(Icons.picture_as_pdf),
+          icon: const Icon(Icons.picture_as_pdf, size: 18),
           label: const Text('Exportar'),
           style: OutlinedButton.styleFrom(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
           ),
         ),
-        const SizedBox(width: 12),
+        const SizedBox(width: 8),
         ElevatedButton.icon(
           onPressed: _addTransaction,
-          icon: const Icon(Icons.add),
+          icon: const Icon(Icons.add, size: 18),
           label: const Text('Nova Transação'),
           style: ElevatedButton.styleFrom(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
           ),
         ),
       ],
@@ -296,44 +298,47 @@ class _FinancialPageState extends State<FinancialPage>
   }
 
   Widget _buildStatsRow() {
-    return Row(
-      children: [
-        Expanded(
-          child: StatsCard(
-            title: 'Média Diária',
-            value: 'R\$ ${_avgDailyExpense.toStringAsFixed(2)}',
-            icon: Icons.calendar_today,
-            color: Colors.orange,
+    return SizedBox(
+      height: 80,
+      child: Row(
+        children: [
+          Expanded(
+            child: StatsCard(
+              title: 'Média Diária',
+              value: 'R\$ ${_avgDailyExpense.toStringAsFixed(2)}',
+              icon: Icons.calendar_today,
+              color: Colors.orange,
+            ),
           ),
-        ),
-        const SizedBox(width: 16),
-        Expanded(
-          child: StatsCard(
-            title: 'Total Transações',
-            value: _transactions.length.toString(),
-            icon: Icons.receipt_long,
-            color: Colors.blue,
+          const SizedBox(width: 12),
+          Expanded(
+            child: StatsCard(
+              title: 'Total Transações',
+              value: _transactions.length.toString(),
+              icon: Icons.receipt_long,
+              color: Colors.blue,
+            ),
           ),
-        ),
-        const SizedBox(width: 16),
-        Expanded(
-          child: StatsCard(
-            title: 'Contas',
-            value: _accounts.length.toString(),
-            icon: Icons.account_balance,
-            color: Colors.purple,
+          const SizedBox(width: 12),
+          Expanded(
+            child: StatsCard(
+              title: 'Contas',
+              value: _accounts.length.toString(),
+              icon: Icons.account_balance,
+              color: Colors.purple,
+            ),
           ),
-        ),
-        const SizedBox(width: 16),
-        Expanded(
-          child: StatsCard(
-            title: 'Metas',
-            value: _goals.length.toString(),
-            icon: Icons.flag,
-            color: Colors.green,
+          const SizedBox(width: 12),
+          Expanded(
+            child: StatsCard(
+              title: 'Metas',
+              value: _goals.length.toString(),
+              icon: Icons.flag,
+              color: Colors.green,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -341,20 +346,25 @@ class _FinancialPageState extends State<FinancialPage>
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(4),
       ),
       child: TabBar(
         controller: _tabController,
         labelColor: AppTheme.primaryColor,
         unselectedLabelColor: Colors.grey,
         indicatorColor: AppTheme.primaryColor,
-        indicatorWeight: 3,
+        indicatorWeight: 2,
+        labelStyle: const TextStyle(fontSize: 13),
+        unselectedLabelStyle: const TextStyle(fontSize: 13),
         tabs: const [
-          Tab(text: 'Transações', icon: Icon(Icons.receipt_long)),
-          Tab(text: 'Contas', icon: Icon(Icons.account_balance)),
-          Tab(text: 'Parcelas', icon: Icon(Icons.credit_card)),
-          Tab(text: 'Gastos Fixos', icon: Icon(Icons.repeat)),
-          Tab(text: 'Contas/Dívidas', icon: Icon(Icons.warning_amber)),
+          Tab(text: 'Transações', icon: Icon(Icons.receipt_long, size: 18)),
+          Tab(text: 'Contas', icon: Icon(Icons.account_balance, size: 18)),
+          Tab(text: 'Parcelas', icon: Icon(Icons.credit_card, size: 18)),
+          Tab(text: 'Gastos Fixos', icon: Icon(Icons.repeat, size: 18)),
+          Tab(
+            text: 'Contas/Dívidas',
+            icon: Icon(Icons.warning_amber, size: 18),
+          ),
         ],
       ),
     );
@@ -374,32 +384,44 @@ class _FinancialPageState extends State<FinancialPage>
   Widget _buildMainContent() {
     return Column(
       children: [
-        BalanceCard(
-          balance: _balance,
-          income: _totalIncome,
-          expense: _totalExpense,
+        SizedBox(
+          height: 140,
+          child: Row(
+            children: [
+              SizedBox(
+                width: 400,
+                child: BalanceCard(
+                  balance: _balance,
+                  income: _totalIncome,
+                  expense: _totalExpense,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(child: _buildQuickStats()),
+            ],
+          ),
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: 16),
         _buildFilters(),
         const SizedBox(height: 16),
         Expanded(
           child: Container(
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(4),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(20),
+                  padding: const EdgeInsets.all(16),
                   child: Row(
                     children: [
                       const Text(
                         'Transações',
                         style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                       const Spacer(),
@@ -501,7 +523,7 @@ class _FinancialPageState extends State<FinancialPage>
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(4),
                 ),
                 child: ListView.builder(
                   itemCount: 5,
@@ -542,37 +564,40 @@ class _FinancialPageState extends State<FinancialPage>
     return Column(
       children: [
         Container(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(4),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
                 'Detalhes da Transação',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 12),
               if (_selectedTransaction != null)
                 TransactionDetails(transaction: _selectedTransaction!)
               else
                 Container(
-                  height: 200,
+                  height: 150,
                   alignment: Alignment.center,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(
                         Icons.touch_app,
-                        size: 48,
+                        size: 36,
                         color: Colors.grey.shade300,
                       ),
-                      const SizedBox(height: 12),
+                      const SizedBox(height: 8),
                       Text(
                         'Selecione uma transação',
-                        style: TextStyle(color: Colors.grey.shade500),
+                        style: TextStyle(
+                          color: Colors.grey.shade500,
+                          fontSize: 13,
+                        ),
                       ),
                     ],
                   ),
@@ -580,22 +605,22 @@ class _FinancialPageState extends State<FinancialPage>
             ],
           ),
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: 16),
         Expanded(
           child: Container(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(4),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
                   'Por Categoria',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 12),
                 Expanded(child: FinancialCharts(transactions: _transactions)),
               ],
             ),
@@ -688,7 +713,7 @@ class _FinancialPageState extends State<FinancialPage>
                   padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(4),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -713,7 +738,7 @@ class _FinancialPageState extends State<FinancialPage>
                   padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(4),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -740,6 +765,70 @@ class _FinancialPageState extends State<FinancialPage>
     );
   }
 
+  Widget _buildQuickStats() {
+    return Row(
+      children: [
+        Expanded(
+          child: Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(4),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Receitas',
+                  style: TextStyle(fontSize: 11, color: Colors.grey.shade600),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  'R\$ ${_totalIncome.toStringAsFixed(2)}',
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.green,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(4),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Despesas',
+                  style: TextStyle(fontSize: 11, color: Colors.grey.shade600),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  'R\$ ${_totalExpense.toStringAsFixed(2)}',
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.red,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _buildDashboardCard(
     String title,
     String value,
@@ -748,36 +837,36 @@ class _FinancialPageState extends State<FinancialPage>
   ) {
     return Expanded(
       child: Container(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(4),
         ),
         child: Row(
           children: [
             Container(
-              padding: const EdgeInsets.all(12),
+              padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
                 color: color.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(4),
               ),
-              child: Icon(icon, color: color, size: 24),
+              child: Icon(icon, color: color, size: 16),
             ),
-            const SizedBox(width: 16),
+            const SizedBox(width: 10),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
                     title,
-                    style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
+                    style: TextStyle(color: Colors.grey.shade600, fontSize: 11),
                   ),
-                  const SizedBox(height: 4),
                   Text(
                     value,
                     style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ],

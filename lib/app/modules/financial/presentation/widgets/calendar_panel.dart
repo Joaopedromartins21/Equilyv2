@@ -57,7 +57,7 @@ class _CalendarPanelState extends State<CalendarPanel> {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(4),
       ),
       child: Row(
         children: [
@@ -108,7 +108,7 @@ class _CalendarPanelState extends State<CalendarPanel> {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(4),
       ),
       child: Column(
         children: [
@@ -300,7 +300,7 @@ class _CalendarPanelState extends State<CalendarPanel> {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(4),
       ),
       child: SingleChildScrollView(
         child: Column(
@@ -320,7 +320,7 @@ class _CalendarPanelState extends State<CalendarPanel> {
                               : Colors.red)
                           .withValues(alpha: 0.1)
                     : Colors.grey.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(4),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,

@@ -25,7 +25,7 @@ class GoalsPanel extends StatelessWidget {
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(4),
                 ),
                 child: Row(
                   children: [
@@ -247,7 +247,7 @@ class _GoalCard extends StatelessWidget {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(4),
         border: isCompleted ? Border.all(color: Colors.green, width: 2) : null,
       ),
       child: Column(

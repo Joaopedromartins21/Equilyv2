@@ -37,7 +37,7 @@ class _RemindersDebtsPanelState extends State<RemindersDebtsPanel>
         Container(
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(4),
           ),
           child: TabBar(
             controller: _tabController,
@@ -80,55 +80,73 @@ class _RemindersDebtsPanelState extends State<RemindersDebtsPanel>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [Colors.red, Colors.orange],
+          Row(
+            children: [
+              Container(
+                width: 400,
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [Colors.red, Colors.orange],
+                  ),
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Total Pendente',
+                      style: TextStyle(color: Colors.white70, fontSize: 14),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'R\$ ${totalPending.toStringAsFixed(2)}',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      '${reminders.where((r) => !r.isPaid).length} abertas',
+                      style: const TextStyle(
+                        color: Colors.white70,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Total Pendente',
-                        style: TextStyle(color: Colors.white70, fontSize: 14),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'R\$ ${totalPending.toStringAsFixed(2)}',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        '${reminders.where((r) => !r.isPaid).length} contas abertas',
-                        style: const TextStyle(
-                          color: Colors.white70,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ],
+              const SizedBox(width: 16),
+              Column(
+                children: [
+                  _buildQuickStat(
+                    'Atrasadas',
+                    overdue.length.toString(),
+                    Icons.warning,
+                    Colors.red,
                   ),
-                ),
-                ElevatedButton.icon(
-                  onPressed: () => _showAddReminderDialog(),
-                  icon: const Icon(Icons.add),
-                  label: const Text('Nova Conta'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    foregroundColor: Colors.red,
+                  const SizedBox(height: 8),
+                  _buildQuickStat(
+                    'Vencem Soon',
+                    dueSoon.length.toString(),
+                    Icons.schedule,
+                    Colors.orange,
                   ),
+                ],
+              ),
+              const Spacer(),
+              ElevatedButton.icon(
+                onPressed: () => _showAddReminderDialog(),
+                icon: const Icon(Icons.add, size: 18),
+                label: const Text('Nova Conta'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red,
+                  foregroundColor: Colors.white,
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
           const SizedBox(height: 24),
           if (overdue.isNotEmpty) ...[
@@ -179,6 +197,45 @@ class _RemindersDebtsPanelState extends State<RemindersDebtsPanel>
     );
   }
 
+  Widget _buildQuickStat(
+    String title,
+    String value,
+    IconData icon,
+    Color color,
+  ) {
+    return Container(
+      width: 150,
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(4),
+        border: Border.all(color: Colors.grey.shade200),
+      ),
+      child: Row(
+        children: [
+          Icon(icon, color: color, size: 20),
+          const SizedBox(width: 8),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: TextStyle(fontSize: 11, color: Colors.grey.shade600),
+              ),
+              Text(
+                value,
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildSectionHeader(String title, int count, Color color) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
@@ -202,7 +259,7 @@ class _RemindersDebtsPanelState extends State<RemindersDebtsPanel>
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
             decoration: BoxDecoration(
               color: color.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(4),
             ),
             child: Text(
               '$count',
@@ -296,7 +353,7 @@ class _RemindersDebtsPanelState extends State<RemindersDebtsPanel>
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     color: Colors.green.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(4),
                   ),
                   child: Column(
                     children: [
@@ -321,7 +378,7 @@ class _RemindersDebtsPanelState extends State<RemindersDebtsPanel>
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     color: Colors.red.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(4),
                   ),
                   child: Column(
                     children: [

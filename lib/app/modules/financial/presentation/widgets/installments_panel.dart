@@ -21,101 +21,114 @@ class InstallmentsPanel extends StatelessWidget {
     final totalPending = installments.fold(0.0, (sum, t) => sum + t.amount);
     final nextPayment = installments.isNotEmpty ? installments.first : null;
 
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          child: Column(
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          Row(
             children: [
               Container(
+                width: 400,
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
                     colors: [Color(0xFF6366F1), Color(0xFF8B5CF6)],
                   ),
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(4),
                 ),
-                child: Row(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            'Total de Parcelas Pendentes',
-                            style: TextStyle(
-                              color: Colors.white70,
-                              fontSize: 14,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            'R\$ ${totalPending.toStringAsFixed(2)}',
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 28,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            '${installments.length} parcelas em aberto',
-                            style: const TextStyle(
-                              color: Colors.white70,
-                              fontSize: 12,
-                            ),
-                          ),
-                        ],
+                    const Text(
+                      'Parcelas Pendentes',
+                      style: TextStyle(color: Colors.white70, fontSize: 14),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'R\$ ${totalPending.toStringAsFixed(2)}',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                    if (nextPayment != null)
-                      Container(
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.2),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              'Próxima',
-                              style: TextStyle(
-                                color: Colors.white70,
-                                fontSize: 11,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              'R\$ ${nextPayment.amount.toStringAsFixed(2)}',
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Text(
-                              '${nextPayment.date.day}/${nextPayment.date.month}',
-                              style: const TextStyle(
-                                color: Colors.white70,
-                                fontSize: 11,
-                              ),
-                            ),
-                          ],
-                        ),
+                    const SizedBox(height: 4),
+                    Text(
+                      '${installments.length} em aberto',
+                      style: const TextStyle(
+                        color: Colors.white70,
+                        fontSize: 12,
                       ),
+                    ),
                   ],
                 ),
               ),
-              const SizedBox(height: 24),
-              Expanded(
-                child: installments.isEmpty
-                    ? _buildEmptyState()
-                    : _buildInstallmentsList(installments),
+              const SizedBox(width: 16),
+              Column(
+                children: [
+                  _buildQuickStat(
+                    'Próxima',
+                    nextPayment != null
+                        ? 'R\$ ${nextPayment.amount.toStringAsFixed(2)}'
+                        : '-',
+                    Icons.schedule,
+                    Colors.orange,
+                  ),
+                  const SizedBox(height: 8),
+                  _buildQuickStat(
+                    'Total Parc.',
+                    installments.length.toString(),
+                    Icons.format_list_numbered,
+                    Colors.blue,
+                  ),
+                ],
               ),
             ],
           ),
-        ),
-      ],
+          const SizedBox(height: 24),
+          installments.isEmpty
+              ? _buildEmptyState()
+              : _buildInstallmentsList(installments),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildQuickStat(
+    String title,
+    String value,
+    IconData icon,
+    Color color,
+  ) {
+    return Container(
+      width: 150,
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(4),
+        border: Border.all(color: Colors.grey.shade200),
+      ),
+      child: Row(
+        children: [
+          Icon(icon, color: color, size: 20),
+          const SizedBox(width: 8),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: TextStyle(fontSize: 11, color: Colors.grey.shade600),
+              ),
+              Text(
+                value,
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 
@@ -172,7 +185,7 @@ class InstallmentsPanel extends StatelessWidget {
                     color: account != null
                         ? Color(account.color).withValues(alpha: 0.1)
                         : AppTheme.primaryColor.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(4),
                   ),
                   child: Icon(
                     Icons.credit_card,

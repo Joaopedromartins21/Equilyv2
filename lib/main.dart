@@ -125,50 +125,50 @@ class _SplashScreenState extends State<SplashScreen>
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
-                      width: 100,
-                      height: 100,
+                      width: 64,
+                      height: 64,
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        borderRadius: BorderRadius.circular(25),
+                        borderRadius: BorderRadius.circular(4),
                         boxShadow: [
                           BoxShadow(
                             color: Colors.black.withAlpha(51),
-                            blurRadius: 20,
-                            offset: const Offset(0, 10),
+                            blurRadius: 16,
+                            offset: const Offset(0, 8),
                           ),
                         ],
                       ),
                       child: const Icon(
                         Icons.bolt,
                         color: Color(0xFF6C63FF),
-                        size: 56,
+                        size: 36,
                       ),
                     ),
-                    const SizedBox(height: 32),
+                    const SizedBox(height: 24),
                     const Text(
                       'Equily',
                       style: TextStyle(
-                        fontSize: 36,
+                        fontSize: 28,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                         letterSpacing: 2,
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 6),
                     Text(
                       'Seu assistente financeiro',
                       style: TextStyle(
-                        fontSize: 16,
+                        fontSize: 14,
                         color: Colors.white.withAlpha(179),
                       ),
                     ),
-                    const SizedBox(height: 48),
+                    const SizedBox(height: 32),
                     SizedBox(
-                      width: 40,
-                      height: 40,
+                      width: 24,
+                      height: 24,
                       child: CircularProgressIndicator(
                         color: Colors.white.withAlpha(179),
-                        strokeWidth: 3,
+                        strokeWidth: 2,
                       ),
                     ),
                   ],
@@ -267,36 +267,43 @@ class _LoginPageState extends State<LoginPage> {
           child: Center(
             child: SingleChildScrollView(
               child: Container(
-                width: 400,
-                padding: const EdgeInsets.all(32),
+                width: 380,
+                padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(4),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withAlpha(20),
+                      blurRadius: 20,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
                 ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Container(
-                      width: 60,
-                      height: 60,
+                      width: 48,
+                      height: 48,
                       decoration: BoxDecoration(
                         gradient: const LinearGradient(
                           colors: [Color(0xFF6C63FF), Color(0xFF8B7CF6)],
                         ),
-                        borderRadius: BorderRadius.circular(15),
+                        borderRadius: BorderRadius.circular(4),
                       ),
                       child: const Icon(
                         Icons.bolt,
                         color: Colors.white,
-                        size: 32,
+                        size: 24,
                       ),
                     ),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 16),
                     Text(
                       _isRegisterMode ? 'Criar Conta' : 'Bem-vindo!',
                       style: const TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                     const SizedBox(height: 32),
@@ -304,22 +311,18 @@ class _LoginPageState extends State<LoginPage> {
                       controller: _emailController,
                       decoration: InputDecoration(
                         labelText: 'Email',
-                        prefixIcon: const Icon(Icons.email),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
+                        prefixIcon: const Icon(Icons.email, size: 18),
+                        isDense: true,
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 12),
                     TextField(
                       controller: _passwordController,
                       obscureText: true,
                       decoration: InputDecoration(
                         labelText: 'Senha',
-                        prefixIcon: const Icon(Icons.lock),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
+                        prefixIcon: const Icon(Icons.lock, size: 18),
+                        isDense: true,
                       ),
                     ),
                     if (_errorMessage != null) ...[
@@ -328,7 +331,7 @@ class _LoginPageState extends State<LoginPage> {
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
                           color: Colors.red.shade50,
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(4),
                         ),
                         child: Text(
                           _errorMessage!,
@@ -336,22 +339,22 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                     ],
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 20),
                     SizedBox(
                       width: double.infinity,
-                      height: 50,
+                      height: 40,
                       child: ElevatedButton(
                         onPressed: _submit,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF6C63FF),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(4),
                           ),
                         ),
                         child: Text(
                           _isRegisterMode ? 'Cadastrar' : 'Entrar',
                           style: const TextStyle(
-                            fontSize: 16,
+                            fontSize: 14,
                             fontWeight: FontWeight.w600,
                             color: Colors.white,
                           ),
@@ -441,7 +444,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     Color(0xFF8B7CF6),
                                   ],
                                 ),
-                                borderRadius: BorderRadius.circular(10),
+                                borderRadius: BorderRadius.circular(4),
                               ),
                               child: const Icon(
                                 Icons.bolt,
@@ -467,7 +470,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             gradient: const LinearGradient(
                               colors: [Color(0xFF6C63FF), Color(0xFF8B7CF6)],
                             ),
-                            borderRadius: BorderRadius.circular(10),
+                            borderRadius: BorderRadius.circular(4),
                           ),
                           child: const Icon(
                             Icons.bolt,
@@ -495,13 +498,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         textColor,
                         secondaryColor,
                       ),
-                      _buildNavItem(
-                        3,
-                        Icons.bar_chart,
-                        'Relatórios',
-                        textColor,
-                        secondaryColor,
-                      ),
                       if (_isExpanded) ...[
                         const SizedBox(height: 8),
                         const Divider(),
@@ -521,19 +517,30 @@ class _HomeScreenState extends State<HomeScreen> {
                   leading: Icon(
                     _isDark ? Icons.light_mode : Icons.dark_mode,
                     color: _isDark ? Colors.amber : secondaryColor,
+                    size: 18,
                   ),
                   title: _isExpanded
                       ? Text(
                           _isDark ? 'Modo Claro' : 'Modo Escuro',
-                          style: TextStyle(color: textColor),
+                          style: TextStyle(color: textColor, fontSize: 13),
                         )
                       : null,
                   onTap: _toggleTheme,
+                  dense: true,
+                  minLeadingWidth: 20,
+                  contentPadding: EdgeInsets.zero,
                 ),
                 ListTile(
-                  leading: const Icon(Icons.logout, color: Colors.red),
+                  leading: const Icon(
+                    Icons.logout,
+                    color: Colors.red,
+                    size: 18,
+                  ),
                   title: _isExpanded
-                      ? const Text('Sair', style: TextStyle(color: Colors.red))
+                      ? const Text(
+                          'Sair',
+                          style: TextStyle(color: Colors.red, fontSize: 13),
+                        )
                       : null,
                   onTap: () async {
                     await FirebaseAuth.instance.signOut();
@@ -543,13 +550,20 @@ class _HomeScreenState extends State<HomeScreen> {
                         MaterialPageRoute(builder: (_) => const LoginPage()),
                       );
                   },
+                  dense: true,
+                  minLeadingWidth: 20,
+                  contentPadding: EdgeInsets.zero,
                 ),
                 ListTile(
                   leading: Icon(
                     _isExpanded ? Icons.chevron_left : Icons.chevron_right,
                     color: secondaryColor,
+                    size: 18,
                   ),
                   onTap: () => setState(() => _isExpanded = !_isExpanded),
+                  dense: true,
+                  minLeadingWidth: 20,
+                  contentPadding: EdgeInsets.zero,
                 ),
               ],
             ),
@@ -559,8 +573,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 ? const FinancialPage()
                 : _selectedModule == 1
                 ? const DashboardPage()
-                : _selectedModule == 3
-                ? const ReportsPage()
                 : _buildSettings(),
           ),
         ],
@@ -577,30 +589,31 @@ class _HomeScreenState extends State<HomeScreen> {
   ) {
     final isSelected = _selectedModule == index;
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
       child: Material(
         color: isSelected
             ? const Color(0xFF6C63FF).withAlpha(26)
             : Colors.transparent,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(4),
         child: InkWell(
           onTap: () => setState(() => _selectedModule = index),
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(4),
           child: Container(
-            height: 48,
-            padding: const EdgeInsets.symmetric(horizontal: 12),
+            height: 36,
+            padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Row(
               children: [
                 Icon(
                   icon,
                   color: isSelected ? const Color(0xFF6C63FF) : secondaryColor,
-                  size: 22,
+                  size: 18,
                 ),
                 if (_isExpanded) ...[
-                  const SizedBox(width: 12),
+                  const SizedBox(width: 10),
                   Text(
                     label,
                     style: TextStyle(
+                      fontSize: 13,
                       color: isSelected ? const Color(0xFF6C63FF) : textColor,
                       fontWeight: isSelected
                           ? FontWeight.w600
@@ -632,24 +645,24 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             const Text(
               'Perfil',
-              style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
             Center(
               child: Container(
-                width: 100,
-                height: 100,
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
+                width: 64,
+                height: 64,
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
                     colors: [Color(0xFF6C63FF), Color(0xFF8B7CF6)],
                   ),
-                  shape: BoxShape.circle,
+                  borderRadius: BorderRadius.circular(8),
                 ),
                 child: Center(
                   child: Text(
                     initial,
                     style: const TextStyle(
-                      fontSize: 40,
+                      fontSize: 28,
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
                     ),
@@ -657,16 +670,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
             // Info Card
             Container(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  BoxShadow(color: Colors.black.withAlpha(13), blurRadius: 10),
-                ],
+                borderRadius: BorderRadius.circular(4),
+                border: Border.all(color: Colors.grey.shade200),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -715,22 +726,20 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(height: 16),
             // App Settings
             Container(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  BoxShadow(color: Colors.black.withAlpha(13), blurRadius: 10),
-                ],
+                borderRadius: BorderRadius.circular(4),
+                border: Border.all(color: Colors.grey.shade200),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
                     'Configurações do App',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 12),
                   ListTile(
                     leading: const Icon(
                       Icons.attach_money,
@@ -758,7 +767,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       color: Color(0xFF6C63FF),
                     ),
                     title: const Text('Sobre'),
-                    subtitle: const Text('Versão 1.0.0'),
+                    subtitle: const Text('Versão 1.2.0'),
                     trailing: const Icon(Icons.chevron_right),
                     onTap: () {},
                   ),
@@ -768,22 +777,20 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(height: 16),
             // Account Actions
             Container(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  BoxShadow(color: Colors.black.withAlpha(13), blurRadius: 10),
-                ],
+                borderRadius: BorderRadius.circular(4),
+                border: Border.all(color: Colors.grey.shade200),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
                     'Conta',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 12),
                   ListTile(
                     leading: const Icon(Icons.lock_reset, color: Colors.orange),
                     title: const Text('Redefinir Senha'),

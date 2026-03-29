@@ -88,7 +88,7 @@ class _TransferDialogState extends State<TransferDialog> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
       child: Container(
         width: 450,
         padding: const EdgeInsets.all(24),

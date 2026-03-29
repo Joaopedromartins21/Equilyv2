@@ -108,7 +108,7 @@ class _LoginPageState extends State<LoginPage> {
                 padding: const EdgeInsets.all(32),
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(4),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withAlpha(51),
@@ -129,7 +129,7 @@ class _LoginPageState extends State<LoginPage> {
                           gradient: const LinearGradient(
                             colors: [Color(0xFF6C63FF), Color(0xFF8B7CF6)],
                           ),
-                          borderRadius: BorderRadius.circular(15),
+                          borderRadius: BorderRadius.circular(4),
                         ),
                         child: const Icon(
                           Icons.bolt,
@@ -162,7 +162,7 @@ class _LoginPageState extends State<LoginPage> {
                           labelText: 'Email',
                           prefixIcon: const Icon(Icons.email_outlined),
                           border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(4),
                           ),
                         ),
                         validator: (value) {
@@ -183,7 +183,7 @@ class _LoginPageState extends State<LoginPage> {
                           labelText: 'Senha',
                           prefixIcon: const Icon(Icons.lock_outline),
                           border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(4),
                           ),
                         ),
                         validator: (value) {
@@ -202,7 +202,7 @@ class _LoginPageState extends State<LoginPage> {
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
                             color: Colors.red.shade50,
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(4),
                           ),
                           child: Row(
                             children: [
@@ -232,7 +232,7 @@ class _LoginPageState extends State<LoginPage> {
                             backgroundColor: const Color(0xFF6C63FF),
                             foregroundColor: Colors.white,
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
+                              borderRadius: BorderRadius.circular(4),
                             ),
                           ),
                           child: _isLoading

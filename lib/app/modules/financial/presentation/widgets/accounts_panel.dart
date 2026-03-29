@@ -19,72 +19,95 @@ class AccountsPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          flex: 2,
-          child: Column(
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [AppTheme.primaryColor, Color(0xFF8B7CF6)],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
+              SizedBox(
+                width: 400,
+                child: Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [AppTheme.primaryColor, Color(0xFF8B7CF6)],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(4),
                   ),
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Row(
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Saldo Total',
-                          style: TextStyle(color: Colors.white70, fontSize: 14),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'R\$ ${_totalBalance.toStringAsFixed(2)}',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 32,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          '${accounts.length} contas cadastradas',
-                          style: const TextStyle(
-                            color: Colors.white70,
-                            fontSize: 12,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const Spacer(),
-                    ElevatedButton.icon(
-                      onPressed: () => _showAddAccountDialog(context),
-                      icon: const Icon(Icons.add),
-                      label: const Text('Nova Conta'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        foregroundColor: AppTheme.primaryColor,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Saldo Total',
+                        style: TextStyle(color: Colors.white70, fontSize: 14),
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 8),
+                      Text(
+                        'R\$ ${_totalBalance.toStringAsFixed(2)}',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        '${accounts.length} contas',
+                        style: const TextStyle(
+                          color: Colors.white70,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-              const SizedBox(height: 24),
-              Expanded(
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
+              const SizedBox(width: 16),
+              Column(
+                children: [
+                  _buildQuickStat(
+                    'Contas',
+                    accounts.length.toString(),
+                    Icons.account_balance,
+                    Colors.blue,
                   ),
-                  child: ListView.builder(
+                  const SizedBox(height: 8),
+                  _buildQuickStat(
+                    'Maior Saldo',
+                    'R\$ ${accounts.isEmpty ? 0 : accounts.map((a) => a.balance).reduce((a, b) => a > b ? a : b).toStringAsFixed(2)}',
+                    Icons.trending_up,
+                    Colors.green,
+                  ),
+                ],
+              ),
+              const Spacer(),
+              ElevatedButton.icon(
+                onPressed: () => _showAddAccountDialog(context),
+                icon: const Icon(Icons.add, size: 18),
+                label: const Text('Nova Conta'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppTheme.primaryColor,
+                  foregroundColor: Colors.white,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 24),
+          Container(
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(4),
+            ),
+            child: accounts.isEmpty
+                ? _buildEmptyState(context)
+                : ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
                     padding: const EdgeInsets.all(16),
                     itemCount: accounts.length,
                     itemBuilder: (context, index) {
@@ -95,69 +118,71 @@ class AccountsPanel extends StatelessWidget {
                       );
                     },
                   ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildEmptyState(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(40),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.account_balance, size: 64, color: Colors.grey.shade300),
+          const SizedBox(height: 16),
+          Text(
+            'Nenhuma conta cadastrada',
+            style: TextStyle(color: Colors.grey.shade500, fontSize: 16),
+          ),
+          const SizedBox(height: 8),
+          ElevatedButton.icon(
+            onPressed: () => _showAddAccountDialog(context),
+            icon: const Icon(Icons.add),
+            label: const Text('Cadastrar Conta'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildQuickStat(
+    String title,
+    String value,
+    IconData icon,
+    Color color,
+  ) {
+    return Container(
+      width: 150,
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(4),
+        border: Border.all(color: Colors.grey.shade200),
+      ),
+      child: Row(
+        children: [
+          Icon(icon, color: color, size: 20),
+          const SizedBox(width: 8),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: TextStyle(fontSize: 11, color: Colors.grey.shade600),
+              ),
+              Text(
+                value,
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ],
           ),
-        ),
-        const SizedBox(width: 24),
-        Expanded(
-          child: Container(
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Resumo por Tipo',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 20),
-                _buildTypeSummary(
-                  'Conta Corrente',
-                  accounts
-                      .where((a) => a.type == 'checking')
-                      .fold(0.0, (s, a) => s + a.balance),
-                  Colors.blue,
-                ),
-                _buildTypeSummary(
-                  'Poupança',
-                  accounts
-                      .where((a) => a.type == 'savings')
-                      .fold(0.0, (s, a) => s + a.balance),
-                  Colors.green,
-                ),
-                _buildTypeSummary(
-                  'Cartão',
-                  accounts
-                      .where((a) => a.type == 'credit')
-                      .fold(0.0, (s, a) => s + a.balance),
-                  Colors.orange,
-                ),
-                _buildTypeSummary(
-                  'Dinheiro',
-                  accounts
-                      .where((a) => a.type == 'cash')
-                      .fold(0.0, (s, a) => s + a.balance),
-                  Colors.purple,
-                ),
-                const SizedBox(height: 24),
-                const Divider(),
-                const SizedBox(height: 16),
-                const Text(
-                  'Fatura do Cartão',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 16),
-                _buildCreditCardInvoice(),
-              ],
-            ),
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -184,7 +209,7 @@ class AccountsPanel extends StatelessWidget {
             gradient: const LinearGradient(
               colors: [Colors.orange, Colors.deepOrange],
             ),
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(4),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -252,7 +277,7 @@ class AccountsPanel extends StatelessWidget {
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(4),
         border: Border.all(color: Colors.grey.shade200),
       ),
       child: Row(
@@ -523,7 +548,7 @@ class _AccountCard extends StatelessWidget {
               height: 48,
               decoration: BoxDecoration(
                 color: Color(account.color).withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(4),
               ),
               child: Icon(_getAccountIcon(), color: Color(account.color)),
             ),

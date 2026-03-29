@@ -18,7 +18,7 @@ class TransactionDetails extends StatelessWidget {
           decoration: BoxDecoration(
             color: (isIncome ? AppTheme.secondaryColor : AppTheme.errorColor)
                 .withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(4),
           ),
           child: Row(
             children: [
