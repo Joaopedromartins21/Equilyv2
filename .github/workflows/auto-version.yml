@@ -41,6 +41,9 @@ jobs:
           commit_message: "chore: Update version to ${{ steps.extract.outputs.version }}"
           file_pattern: "pubspec.yaml lib/main.dart installer/installer.iss"
 
-      - name: Push changes
+      - name: Update tag to point to new commit
         run: |
-          git push origin ${{ github.ref }}
+          git tag -d ${{ github.ref_name }}
+          git push origin :refs/tags/${{ github.ref_name }}
+          git tag ${{ github.ref_name }}
+          git push origin ${{ github.ref_name }}
