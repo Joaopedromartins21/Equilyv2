@@ -486,15 +486,15 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: [
                       _buildNavItem(
                         0,
-                        Icons.account_balance_wallet,
-                        'Financeiro',
+                        Icons.dashboard,
+                        'Dashboard',
                         textColor,
                         secondaryColor,
                       ),
                       _buildNavItem(
                         1,
-                        Icons.dashboard,
-                        'Dashboard',
+                        Icons.account_balance_wallet,
+                        'Financeiro',
                         textColor,
                         secondaryColor,
                       ),
@@ -570,9 +570,9 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           Expanded(
             child: _selectedModule == 0
-                ? const FinancialPage()
-                : _selectedModule == 1
                 ? const DashboardPage()
+                : _selectedModule == 1
+                ? const FinancialPage()
                 : _buildSettings(),
           ),
         ],
