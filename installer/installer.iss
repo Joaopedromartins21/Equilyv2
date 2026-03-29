@@ -7,7 +7,7 @@
 #define MyAppURL "https://github.com/Joaopedromartins21/Equilyv2"
 
 [Setup]
-AppId={D9F1F246-0162-49AF-AF82-442703169F0B}
+AppId={{d9f1f246-0162-49af-af82-442703169f0b}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
 AppPublisher={#MyAppPublisher}
