@@ -67,7 +67,7 @@ jobs:
 
       - name: Rename installer
         run: |
-          $version = ${{ github.ref_name }}
+          $version = "${{ github.ref_name }}"
           Get-ChildItem -Path "Output" -Filter "*.exe" | ForEach-Object { Move-Item -Path $_.FullName -Destination "Equily-Setup-$version.exe" -Force }
 
       - name: Upload Windows installer
