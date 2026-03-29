@@ -126,7 +126,7 @@ jobs:
       - run: flutter build windows --release
 
       - name: Create Shorebird Release
-        run: shorebird release windows --release-version ${{ github.ref_name }}
+        run: shorebird release windows
         env:
           SHOREBIRD_TOKEN: ${{ secrets.SHOREBIRD_TOKEN }}
 
@@ -155,6 +155,6 @@ jobs:
       - run: flutter pub get
 
       - name: Create Shorebird Patch
-        run: shorebird patch windows --release-version ${{ github.ref_name }}
+        run: shorebird patch windows
         env:
           SHOREBIRD_TOKEN: ${{ secrets.SHOREBIRD_TOKEN }}
