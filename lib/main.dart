@@ -15,6 +15,7 @@ import 'app/core/services/update_service.dart';
 import 'app/core/theme/app_theme.dart';
 import 'app/modules/financial/data/models/transaction_model.dart';
 import 'app/modules/financial/presentation/pages/financial_page.dart';
+import 'app/modules/habits/presentation/pages/habits_page.dart';
 import 'app/modules/dashboard/presentation/pages/dashboard_page.dart';
 
 void main() async {
@@ -572,6 +573,13 @@ class _HomeScreenState extends State<HomeScreen> {
                         textColor,
                         secondaryColor,
                       ),
+                      _buildNavItem(
+                        3,
+                        Icons.check_circle,
+                        'Hábitos',
+                        textColor,
+                        secondaryColor,
+                      ),
                       if (_isExpanded) ...[
                         const SizedBox(height: 8),
                         const Divider(),
@@ -647,6 +655,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 ? const DashboardPage()
                 : _selectedModule == 1
                 ? const FinancialPage()
+                : _selectedModule == 3
+                ? const HabitsPage()
                 : _buildSettings(),
           ),
         ],
