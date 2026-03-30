@@ -59,11 +59,11 @@ jobs:
 
       - name: Build Windows
         run: |
-          if [[ "${{ github.ref }}" == refs/tags/v* ]]; then
+          if ("${{ github.ref }}" -like "refs/tags/v*") {
             shorebird release windows --build
-          else
+          } else {
             flutter build windows --release
-          fi
+          }
 
       - name: Create Release folder
         run: |
