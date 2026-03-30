@@ -30,11 +30,13 @@ class _LoginPageState extends State<LoginPage> {
   Future<void> _loadSavedData() async {
     final prefs = await SharedPreferences.getInstance();
     final savedEmail = prefs.getString('saved_email') ?? '';
+    final savedPassword = prefs.getString('saved_password') ?? '';
     final rememberMe = prefs.getBool('remember_me') ?? false;
 
     if (mounted) {
       setState(() {
         _emailController.text = savedEmail;
+        _passwordController.text = savedPassword;
         _rememberMe = rememberMe;
       });
     }
@@ -44,9 +46,11 @@ class _LoginPageState extends State<LoginPage> {
     final prefs = await SharedPreferences.getInstance();
     if (_rememberMe) {
       await prefs.setString('saved_email', _emailController.text.trim());
+      await prefs.setString('saved_password', _passwordController.text);
       await prefs.setBool('remember_me', true);
     } else {
       await prefs.remove('saved_email');
+      await prefs.remove('saved_password');
       await prefs.setBool('remember_me', false);
     }
   }
