@@ -205,6 +205,7 @@ class _LoginPageState extends State<LoginPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _rememberMe = false;
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -249,7 +250,12 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
 
-    setState(() => _errorMessage = 'Carregando...');
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+
+    await Future.delayed(const Duration(milliseconds: 500));
 
     try {
       if (_isRegisterMode) {
@@ -280,9 +286,15 @@ class _LoginPageState extends State<LoginPage> {
         }
       }
     } on FirebaseAuthException catch (e) {
-      setState(() => _errorMessage = e.message ?? 'Erro');
+      setState(() {
+        _errorMessage = e.message ?? 'Erro';
+        _isLoading = false;
+      });
     } catch (e) {
-      setState(() => _errorMessage = 'Erro: $e');
+      setState(() {
+        _errorMessage = 'Erro: $e';
+        _isLoading = false;
+      });
     }
   }
 
@@ -394,21 +406,33 @@ class _LoginPageState extends State<LoginPage> {
                       width: double.infinity,
                       height: 40,
                       child: ElevatedButton(
-                        onPressed: _submit,
+                        onPressed: _isLoading ? null : _submit,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF6C63FF),
+                          disabledBackgroundColor: const Color(
+                            0xFF6C63FF,
+                          ).withAlpha(128),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(4),
                           ),
                         ),
-                        child: Text(
-                          _isRegisterMode ? 'Cadastrar' : 'Entrar',
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white,
-                          ),
-                        ),
+                        child: _isLoading
+                            ? const SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                  strokeWidth: 2,
+                                ),
+                              )
+                            : Text(
+                                _isRegisterMode ? 'Cadastrar' : 'Entrar',
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.white,
+                                ),
+                              ),
                       ),
                     ),
                     const SizedBox(height: 16),
