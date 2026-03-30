@@ -51,19 +51,8 @@ jobs:
 
       - run: flutter pub get
 
-      - name: Install Shorebird
-        if: startsWith(github.ref, 'refs/tags/v')
-        uses: shorebirdtech/setup-shorebird@v1
-        with:
-          version: ${{ env.FLUTTER_VERSION }}
-
       - name: Build Windows
-        run: |
-          if ("${{ github.ref }}" -like "refs/tags/v*") {
-            shorebird release windows --build
-          } else {
-            flutter build windows --release
-          }
+        run: flutter build windows --release
 
       - name: Create Release folder
         run: |
