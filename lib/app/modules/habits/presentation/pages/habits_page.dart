@@ -290,18 +290,17 @@ class _HabitsPageState extends State<HabitsPage> {
     }
   }
 
+  bool _isTodayCompleted(HabitModel habit, DateTime today) {
+    return habit.completedDates.any(
+      (d) =>
+          d.year == today.year && d.month == today.month && d.day == today.day,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final today = DateTime.now();
     final todayWeekday = today.weekday;
-    final isTodayCompleted = (HabitModel habit) {
-      return habit.completedDates.any(
-        (d) =>
-            d.year == today.year &&
-            d.month == today.month &&
-            d.day == today.day,
-      );
-    };
 
     return Scaffold(
       backgroundColor: const Color(0xFFF5F7FA),
@@ -366,7 +365,7 @@ class _HabitsPageState extends State<HabitsPage> {
                   ),
                   const Spacer(),
                   Text(
-                    '${_habits.where((h) => h.frequency.contains(todayWeekday) && isTodayCompleted(h)).length}/${_habits.where((h) => h.frequency.contains(todayWeekday)).length} concluídos',
+                    '${_habits.where((h) => h.frequency.contains(todayWeekday) && _isTodayCompleted(h, today)).length}/${_habits.where((h) => h.frequency.contains(todayWeekday)).length} concluídos',
                     style: TextStyle(color: Colors.grey.shade600),
                   ),
                 ],
@@ -406,7 +405,7 @@ class _HabitsPageState extends State<HabitsPage> {
                       itemCount: _habits.length,
                       itemBuilder: (context, index) {
                         final habit = _habits[index];
-                        final completed = isTodayCompleted(habit);
+                        final completed = _isTodayCompleted(habit, today);
                         final activeToday = habit.frequency.contains(
                           todayWeekday,
                         );
