@@ -124,10 +124,15 @@ jobs:
         with:
           version: ${{ env.FLUTTER_VERSION }}
 
+      - name: Configure Git long paths
+        run: git config --system core.longpaths true
+
       - run: flutter pub get
 
       - name: Create Shorebird Release (builds with Shorebird Engine)
-        run: shorebird release windows --build
+        run: |
+          $version = "${{ github.ref_name }}" -replace "^v", ""
+          shorebird release windows --release-version $version --build-name $version --build-number ${{ github.run_number }}
         env:
           SHOREBIRD_TOKEN: ${{ secrets.SHOREBIRD_TOKEN }}
 
@@ -176,6 +181,9 @@ jobs:
         uses: shorebirdtech/setup-shorebird@v1
         with:
           version: ${{ env.FLUTTER_VERSION }}
+
+      - name: Configure Git long paths
+        run: git config --system core.longpaths true
 
       - run: flutter pub get
 
