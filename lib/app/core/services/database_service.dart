@@ -8,6 +8,7 @@ import '../../modules/financial/data/models/budget_model.dart';
 import '../../modules/financial/data/models/recurring_model.dart';
 import '../../modules/financial/data/models/reminder_model.dart';
 import '../../modules/financial/data/models/debt_model.dart';
+import '../../modules/habits/data/models/habit_model.dart';
 
 class _CacheBox<T> {
   final List<T> _items = [];
@@ -53,6 +54,7 @@ class DatabaseService {
   static const String recurringBox = 'recurring';
   static const String remindersBox = 'reminders';
   static const String debtsBox = 'debts';
+  static const String habitsBox = 'habits';
   static const String settingsBox = 'settings';
 
   static final _CacheBox<TransactionModel> _transactionsCache =
@@ -100,6 +102,12 @@ class DatabaseService {
     getId: (d) => d.id,
   );
 
+  static final _CacheBox<HabitModel> _habitsCache = _CacheBox<HabitModel>(
+    fromMap: HabitModel.fromMap,
+    toMap: (h) => h.toMap(),
+    getId: (h) => h.id,
+  );
+
   static _CacheBox<TransactionModel> get transactions => _transactionsCache;
   static _CacheBox<AccountModel> get accounts => _accountsCache;
   static _CacheBox<GoalModel> get goals => _goalsCache;
@@ -107,6 +115,7 @@ class DatabaseService {
   static _CacheBox<RecurringTransactionModel> get recurring => _recurringCache;
   static _CacheBox<ReminderModel> get reminders => _remindersCache;
   static _CacheBox<DebtModel> get debts => _debtsCache;
+  static _CacheBox<HabitModel> get habits => _habitsCache;
 
   static Future<void> init() async {
     await loadAllData();
@@ -153,6 +162,12 @@ class DatabaseService {
     final debts = await getAllDebts();
     for (var d in debts) {
       _debtsCache.add(d);
+    }
+
+    _habitsCache.clear();
+    final habitsList = await getAllHabits();
+    for (var h in habitsList) {
+      _habitsCache.add(h);
     }
   }
 
@@ -400,6 +415,32 @@ class DatabaseService {
   static Future<void> deleteDebt(String id) async {
     await FirebaseService.deleteDocument(debtsBox, id);
     _debtsCache.removeWhere((d) => d.id == id);
+  }
+
+  // Habits
+  static Future<List<HabitModel>> getAllHabits() async {
+    final docs = await FirebaseService.getAllDocuments(habitsBox);
+    return docs
+        .map((doc) => HabitModel.fromMap(doc.data() as Map<String, dynamic>))
+        .toList();
+  }
+
+  static Future<void> addHabit(HabitModel habit) async {
+    await FirebaseService.addDocument(habitsBox, habit.id, habit.toMap());
+    _habitsCache.add(habit);
+  }
+
+  static Future<void> updateHabit(HabitModel habit) async {
+    await FirebaseService.updateDocument(habitsBox, habit.id, habit.toMap());
+    final index = _habitsCache.indexWhere((h) => h.id == habit.id);
+    if (index != -1) {
+      _habitsCache[index] = habit;
+    }
+  }
+
+  static Future<void> deleteHabit(String id) async {
+    await FirebaseService.deleteDocument(habitsBox, id);
+    _habitsCache.removeWhere((h) => h.id == id);
   }
 
   static Future<String> exportAllData() async {
