@@ -102,10 +102,39 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+  shorebird-release:
+    name: Shorebird Release
+    runs-on: windows-latest
+    needs: build-windows
+    if: startsWith(github.ref, 'refs/tags/v')
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+
+      - name: Install Shorebird
+        uses: shorebirdtech/setup-shorebird@v1
+        with:
+          version: ${{ env.FLUTTER_VERSION }}
+
+      - run: flutter pub get
+
+      - name: Create Shorebird Release
+        run: shorebird release windows
+        env:
+          SHOREBIRD_TOKEN: ${{ secrets.SHOREBIRD_TOKEN }}
+
   shorebird-patch:
     name: Shorebird Patch
     runs-on: windows-latest
-    needs: build-windows
+    needs: shorebird-release
     if: startsWith(github.ref, 'refs/tags/v')
     steps:
       - uses: actions/checkout@v4
