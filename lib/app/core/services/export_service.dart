@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:csv/csv.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:path_provider/path_provider.dart';
@@ -263,5 +264,140 @@ class ExportService {
       case TransactionCategoryModel.other:
         return 'Outros';
     }
+  }
+
+  static Future<String> exportToCsv(
+    List<TransactionModel> transactions,
+    double totalIncome,
+    double totalExpense,
+    double balance,
+  ) async {
+    final dateFormat = DateFormat('dd/MM/yyyy');
+    final currencyFormat = NumberFormat.currency(
+      locale: 'pt_BR',
+      symbol: 'R\$',
+    );
+
+    final List<List<dynamic>> rows = [
+      ['RELATÓRIO FINANCEIRO - EQUILY'],
+      [
+        'Data de Exportação',
+        DateFormat('dd/MM/yyyy HH:mm').format(DateTime.now()),
+      ],
+      [],
+      ['RESUMO'],
+      ['Receitas', currencyFormat.format(totalIncome)],
+      ['Despesas', currencyFormat.format(totalExpense)],
+      ['Saldo', currencyFormat.format(balance)],
+      [],
+      ['DETALHAMENTO DAS TRANSAÇÕES'],
+      ['Data', 'Descrição', 'Categoria', 'Tipo', 'Valor', 'Conta', 'Parcela'],
+    ];
+
+    for (var t in transactions) {
+      rows.add([
+        dateFormat.format(t.date),
+        t.title,
+        _getCategoryName(t.category),
+        t.type == TransactionTypeModel.income ? 'Receita' : 'Despesa',
+        currencyFormat.format(t.amount),
+        t.accountId ?? '-',
+        t.isInstallment ? '${t.installmentCurrent}/${t.installmentTotal}' : '-',
+      ]);
+    }
+
+    rows.add([]);
+    rows.add(['RESUMO POR CATEGORIA']);
+    rows.add(['Categoria', 'Total']);
+
+    final categoryTotals = <TransactionCategoryModel, double>{};
+    for (var t in transactions.where(
+      (t) => t.type == TransactionTypeModel.expense,
+    )) {
+      categoryTotals[t.category] = (categoryTotals[t.category] ?? 0) + t.amount;
+    }
+
+    for (var entry in categoryTotals.entries) {
+      rows.add([
+        _getCategoryName(entry.key),
+        currencyFormat.format(entry.value),
+      ]);
+    }
+
+    final csv = const ListToCsvConverter().convert(rows);
+
+    final output = await getApplicationDocumentsDirectory();
+    final fileName =
+        'relatorio_equily_${DateTime.now().millisecondsSinceEpoch}.csv';
+    final file = File('${output.path}/$fileName');
+    await file.writeAsString(csv);
+
+    return file.path;
+  }
+
+  static Future<String> exportToExcel(
+    List<TransactionModel> transactions,
+    double totalIncome,
+    double totalExpense,
+    double balance,
+  ) async {
+    final dateFormat = DateFormat('dd/MM/yyyy');
+    final currencyFormat = NumberFormat.currency(
+      locale: 'pt_BR',
+      symbol: 'R\$',
+    );
+
+    final List<List<dynamic>> rows = [
+      ['RELATÓRIO FINANCEIRO - EQUILY'],
+      [
+        'Data de Exportação',
+        DateFormat('dd/MM/yyyy HH:mm').format(DateTime.now()),
+      ],
+      [],
+      ['RESUMO'],
+      ['Receitas', totalIncome],
+      ['Despesas', totalExpense],
+      ['Saldo', balance],
+      [],
+      ['DETALHAMENTO DAS TRANSAÇÕES'],
+      ['Data', 'Descrição', 'Categoria', 'Tipo', 'Valor', 'Conta', 'Parcela'],
+    ];
+
+    for (var t in transactions) {
+      rows.add([
+        dateFormat.format(t.date),
+        t.title,
+        _getCategoryName(t.category),
+        t.type == TransactionTypeModel.income ? 'Receita' : 'Despesa',
+        t.amount,
+        t.accountId ?? '-',
+        t.isInstallment ? '${t.installmentCurrent}/${t.installmentTotal}' : '-',
+      ]);
+    }
+
+    rows.add([]);
+    rows.add(['RESUMO POR CATEGORIA']);
+    rows.add(['Categoria', 'Total']);
+
+    final categoryTotals = <TransactionCategoryModel, double>{};
+    for (var t in transactions.where(
+      (t) => t.type == TransactionTypeModel.expense,
+    )) {
+      categoryTotals[t.category] = (categoryTotals[t.category] ?? 0) + t.amount;
+    }
+
+    for (var entry in categoryTotals.entries) {
+      rows.add([_getCategoryName(entry.key), entry.value]);
+    }
+
+    final csv = const ListToCsvConverter().convert(rows);
+
+    final output = await getApplicationDocumentsDirectory();
+    final fileName =
+        'relatorio_equily_${DateTime.now().millisecondsSinceEpoch}.xls';
+    final file = File('${output.path}/$fileName');
+    await file.writeAsString(csv);
+
+    return file.path;
   }
 }

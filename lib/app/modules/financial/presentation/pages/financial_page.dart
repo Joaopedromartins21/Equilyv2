@@ -19,6 +19,10 @@ import '../widgets/goals_panel.dart';
 import '../widgets/budget_panel.dart';
 import '../widgets/transfer_dialog.dart';
 import '../widgets/monthly_chart.dart';
+import '../widgets/monthly_comparison.dart';
+import '../widgets/spending_projection.dart';
+import '../widgets/category_alerts.dart';
+import '../widgets/advanced_filters.dart';
 import '../widgets/recurring_panel.dart';
 import '../widgets/installments_panel.dart';
 import '../widgets/reminders_debts_panel.dart';
@@ -42,6 +46,7 @@ class _FinancialPageState extends State<FinancialPage>
   String _searchQuery = '';
   TransactionTypeModel? _filterType;
   bool _isLoading = true;
+  bool _showAdvancedFilters = false;
 
   @override
   void initState() {
@@ -165,13 +170,68 @@ class _FinancialPageState extends State<FinancialPage>
   }
 
   Future<void> _exportReport() async {
+    final option = await showDialog<String>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Exportar Relatório'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.picture_as_pdf),
+              title: const Text('PDF'),
+              subtitle: const Text('Relatório formatado'),
+              onTap: () => Navigator.pop(context, 'pdf'),
+            ),
+            ListTile(
+              leading: const Icon(Icons.table_chart),
+              title: const Text('Excel (.xls)'),
+              subtitle: const Text('Planilha do Excel'),
+              onTap: () => Navigator.pop(context, 'excel'),
+            ),
+            ListTile(
+              leading: const Icon(Icons.description),
+              title: const Text('CSV'),
+              subtitle: const Text('Arquivo de texto separado por vírgulas'),
+              onTap: () => Navigator.pop(context, 'csv'),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancelar'),
+          ),
+        ],
+      ),
+    );
+
+    if (option == null) return;
+
     try {
-      final path = await ExportService.exportToPdf(
-        _transactions,
-        _totalIncome,
-        _totalExpense,
-        _balance,
-      );
+      String path;
+      if (option == 'pdf') {
+        path = await ExportService.exportToPdf(
+          _transactions,
+          _totalIncome,
+          _totalExpense,
+          _balance,
+        );
+      } else if (option == 'excel') {
+        path = await ExportService.exportToExcel(
+          _transactions,
+          _totalIncome,
+          _totalExpense,
+          _balance,
+        );
+      } else {
+        path = await ExportService.exportToCsv(
+          _transactions,
+          _totalIncome,
+          _totalExpense,
+          _balance,
+        );
+      }
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -402,7 +462,43 @@ class _FinancialPageState extends State<FinancialPage>
           ),
         ),
         const SizedBox(height: 16),
-        _buildFilters(),
+        MonthlyComparison(transactions: _transactions),
+        const SizedBox(height: 16),
+        SpendingProjection(transactions: _transactions),
+        const SizedBox(height: 16),
+        CategoryAlerts(transactions: _transactions),
+        const SizedBox(height: 16),
+        Row(
+          children: [
+            _buildFilters(),
+            const Spacer(),
+            TextButton.icon(
+              onPressed: () =>
+                  setState(() => _showAdvancedFilters = !_showAdvancedFilters),
+              icon: Icon(
+                _showAdvancedFilters
+                    ? Icons.filter_list_off
+                    : Icons.filter_list,
+                size: 18,
+              ),
+              label: Text(
+                _showAdvancedFilters ? 'Ocultar Filtros' : 'Filtros Avançados',
+              ),
+            ),
+          ],
+        ),
+        if (_showAdvancedFilters) ...[
+          const SizedBox(height: 12),
+          AdvancedFilters(
+            transactions: _transactions,
+            accounts: _accounts,
+            onFilterChanged: (filtered) {
+              setState(() {
+                _transactions = filtered;
+              });
+            },
+          ),
+        ],
         const SizedBox(height: 16),
         Expanded(
           child: Container(
@@ -451,6 +547,27 @@ class _FinancialPageState extends State<FinancialPage>
                               onTap: () => setState(
                                 () => _selectedTransaction = transaction,
                               ),
+                              onDelete: () async {
+                                await DatabaseService.transactions.delete(
+                                  transaction.id,
+                                );
+                                _loadData();
+                              },
+                              onEdit: () async {
+                                final result =
+                                    await showDialog<TransactionModel>(
+                                      context: context,
+                                      builder: (context) =>
+                                          const AddTransactionSheet(),
+                                    );
+                                if (result != null) {
+                                  await DatabaseService.transactions.put(
+                                    result.id,
+                                    result,
+                                  );
+                                  _loadData();
+                                }
+                              },
                             );
                           },
                         ),
