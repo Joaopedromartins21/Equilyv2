@@ -121,8 +121,6 @@ jobs:
 
       - name: Install Shorebird
         uses: shorebirdtech/setup-shorebird@v1
-        with:
-          version: ${{ env.FLUTTER_VERSION }}
 
       - name: Configure Git long paths
         run: git config --system core.longpaths true
@@ -177,8 +175,6 @@ jobs:
 
       - name: Install Shorebird
         uses: shorebirdtech/setup-shorebird@v1
-        with:
-          version: ${{ env.FLUTTER_VERSION }}
 
       - name: Configure Git long paths
         run: git config --system core.longpaths true
