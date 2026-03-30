@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   final VoidCallback? onLoginSuccess;
@@ -18,6 +19,37 @@ class _LoginPageState extends State<LoginPage> {
   bool _isLogin = true;
   bool _isLoading = false;
   String? _errorMessage;
+  bool _rememberMe = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSavedData();
+  }
+
+  Future<void> _loadSavedData() async {
+    final prefs = await SharedPreferences.getInstance();
+    final savedEmail = prefs.getString('saved_email') ?? '';
+    final rememberMe = prefs.getBool('remember_me') ?? false;
+
+    if (mounted) {
+      setState(() {
+        _emailController.text = savedEmail;
+        _rememberMe = rememberMe;
+      });
+    }
+  }
+
+  Future<void> _saveData() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (_rememberMe) {
+      await prefs.setString('saved_email', _emailController.text.trim());
+      await prefs.setBool('remember_me', true);
+    } else {
+      await prefs.remove('saved_email');
+      await prefs.setBool('remember_me', false);
+    }
+  }
 
   @override
   void dispose() {
@@ -46,6 +78,9 @@ class _LoginPageState extends State<LoginPage> {
           password: _passwordController.text,
         );
       }
+
+      // Login successful - save data if remember me is checked
+      await _saveData();
 
       // Login successful - call callback
       if (mounted && widget.onLoginSuccess != null) {
@@ -195,6 +230,22 @@ class _LoginPageState extends State<LoginPage> {
                           }
                           return null;
                         },
+                      ),
+                      const SizedBox(height: 8),
+                      CheckboxListTile(
+                        value: _rememberMe,
+                        onChanged: (value) {
+                          setState(() {
+                            _rememberMe = value ?? false;
+                          });
+                        },
+                        title: const Text(
+                          'Lembrar usuário',
+                          style: TextStyle(fontSize: 14),
+                        ),
+                        controlAffinity: ListTileControlAffinity.leading,
+                        contentPadding: EdgeInsets.zero,
+                        dense: true,
                       ),
                       if (_errorMessage != null) ...[
                         const SizedBox(height: 16),
