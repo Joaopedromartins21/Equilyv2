@@ -13,6 +13,8 @@ analyzer:
     library_private_types_in_public_api: false
     unnecessary_cast: false
     unrelated_type_equality_checks: false
+    prefer_single_quotes: false
+    curly_braces_in_flow_control_structures: false
   exclude:
     - "**/*.g.dart"
     - "**/*.freezed.dart"
@@ -21,4 +23,5 @@ analyzer:
 
 linter:
   rules:
-    prefer_single_quotes: true
+    prefer_single_quotes: false
+    curly_braces_in_flow_control_structures: false
