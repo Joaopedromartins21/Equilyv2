@@ -59,6 +59,10 @@ dependencies:
 
   # Auto-update (Shorebird)
   shorebird_code_push: ^2.0.5
+  
+  # System tray
+  tray_manager: ^0.2.3
+  window_manager: ^0.4.3
 
 dev_dependencies:
   flutter_test:
@@ -86,6 +90,7 @@ flutter:
   # the material Icons class.
   assets:
     - shorebird.yaml
+    - assets/icons/
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
