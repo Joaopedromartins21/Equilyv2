@@ -3,6 +3,7 @@ import 'package:uuid/uuid.dart';
 import '../../data/models/transaction_model.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/services/database_service.dart';
+import '../../../../../core/helpers/category_helper.dart';
 
 class AddTransactionSheet extends StatefulWidget {
   const AddTransactionSheet({super.key});
@@ -192,11 +193,21 @@ class _AddTransactionSheetState extends State<AddTransactionSheet> {
                     labelText: 'Categoria',
                     prefixIcon: Icon(Icons.category),
                   ),
-                  items: TransactionCategoryModel.values
+                  items: CategoryHelper.getCategoriesByType(_type)
                       .map(
                         (c) => DropdownMenuItem(
                           value: c,
-                          child: Text(_getCategoryName(c)),
+                          child: Row(
+                            children: [
+                              Icon(
+                                CategoryHelper.getIcon(c),
+                                size: 18,
+                                color: CategoryHelper.getColor(c),
+                              ),
+                              const SizedBox(width: 8),
+                              Text(CategoryHelper.getName(c)),
+                            ],
+                          ),
                         ),
                       )
                       .toList(),
@@ -489,30 +500,5 @@ class _AddTransactionSheetState extends State<AddTransactionSheet> {
 
   String _formatDate(DateTime date) {
     return '${date.day}/${date.month}/${date.year}';
-  }
-
-  String _getCategoryName(TransactionCategoryModel category) {
-    switch (category) {
-      case TransactionCategoryModel.salary:
-        return 'Salário';
-      case TransactionCategoryModel.investment:
-        return 'Investimento';
-      case TransactionCategoryModel.food:
-        return 'Alimentação';
-      case TransactionCategoryModel.transport:
-        return 'Transporte';
-      case TransactionCategoryModel.entertainment:
-        return 'Entretenimento';
-      case TransactionCategoryModel.health:
-        return 'Saúde';
-      case TransactionCategoryModel.education:
-        return 'Educação';
-      case TransactionCategoryModel.shopping:
-        return 'Compras';
-      case TransactionCategoryModel.bills:
-        return 'Contas';
-      case TransactionCategoryModel.other:
-        return 'Outros';
-    }
   }
 }

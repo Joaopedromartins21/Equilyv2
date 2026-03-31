@@ -5,6 +5,7 @@ import '../../../../../widgets/skeleton_loading.dart';
 import '../../../../core/services/database_service.dart';
 import '../../../../core/services/export_service.dart';
 import '../../../../core/services/backup_service.dart';
+import '../../../../../core/helpers/category_helper.dart';
 import '../../data/models/transaction_model.dart';
 import '../../data/models/account_model.dart';
 import '../../data/models/goal_model.dart';
@@ -45,6 +46,8 @@ class _FinancialPageState extends State<FinancialPage>
   TransactionModel? _selectedTransaction;
   String _searchQuery = '';
   TransactionTypeModel? _filterType;
+  TransactionCategoryModel? _filterCategory;
+  DateTime _selectedMonth = DateTime.now();
   bool _isLoading = true;
   bool _showAdvancedFilters = false;
 
@@ -72,14 +75,21 @@ class _FinancialPageState extends State<FinancialPage>
     setState(() => _isLoading = false);
   }
 
+  List<TransactionModel> get _monthlyTransactions {
+    return _transactions.where((t) {
+      return t.date.year == _selectedMonth.year &&
+          t.date.month == _selectedMonth.month;
+    }).toList();
+  }
+
   double get _totalIncome {
-    return _transactions
+    return _monthlyTransactions
         .where((t) => t.type == TransactionTypeModel.income)
         .fold(0.0, (sum, t) => sum + t.amount);
   }
 
   double get _totalExpense {
-    return _transactions
+    return _monthlyTransactions
         .where((t) => t.type == TransactionTypeModel.expense)
         .fold(0.0, (sum, t) => sum + t.amount);
   }
@@ -87,17 +97,19 @@ class _FinancialPageState extends State<FinancialPage>
   double get _balance => _totalIncome - _totalExpense;
 
   List<TransactionModel> get _filteredTransactions {
-    return _transactions.where((t) {
+    return _monthlyTransactions.where((t) {
       final matchesSearch =
           _searchQuery.isEmpty ||
           t.title.toLowerCase().contains(_searchQuery.toLowerCase());
       final matchesType = _filterType == null || t.type == _filterType;
-      return matchesSearch && matchesType;
+      final matchesCategory =
+          _filterCategory == null || t.category == _filterCategory;
+      return matchesSearch && matchesType && matchesCategory;
     }).toList();
   }
 
   double get _avgDailyExpense {
-    if (_transactions.isEmpty) return 0;
+    if (_monthlyTransactions.isEmpty) return 0;
     final now = DateTime.now();
     final daysInMonth = DateTime(now.year, now.month + 1, 0).day;
     return _totalExpense / daysInMonth;
@@ -310,11 +322,23 @@ class _FinancialPageState extends State<FinancialPage>
         ),
         const Spacer(),
         SizedBox(
-          width: 250,
+          width: 180,
+          child: MonthSelector(
+            selectedMonth: _selectedMonth,
+            onMonthChanged: (month) {
+              setState(() {
+                _selectedMonth = month;
+              });
+            },
+          ),
+        ),
+        const SizedBox(width: 12),
+        SizedBox(
+          width: 200,
           child: TextField(
             onChanged: (v) => setState(() => _searchQuery = v),
             decoration: InputDecoration(
-              hintText: 'Buscar transações...',
+              hintText: 'Buscar...',
               prefixIcon: const Icon(Icons.search, size: 18),
               isDense: true,
               filled: true,
@@ -462,11 +486,11 @@ class _FinancialPageState extends State<FinancialPage>
           ),
         ),
         const SizedBox(height: 16),
-        MonthlyComparison(transactions: _transactions),
+        MonthlyComparison(transactions: _monthlyTransactions),
         const SizedBox(height: 16),
-        SpendingProjection(transactions: _transactions),
+        SpendingProjection(transactions: _monthlyTransactions),
         const SizedBox(height: 16),
-        CategoryAlerts(transactions: _transactions),
+        CategoryAlerts(transactions: _monthlyTransactions),
         const SizedBox(height: 16),
         Row(
           children: [
@@ -490,7 +514,7 @@ class _FinancialPageState extends State<FinancialPage>
         if (_showAdvancedFilters) ...[
           const SizedBox(height: 12),
           AdvancedFilters(
-            transactions: _transactions,
+            transactions: _monthlyTransactions,
             accounts: _accounts,
             onFilterChanged: (filtered) {
               setState(() {
@@ -583,16 +607,92 @@ class _FinancialPageState extends State<FinancialPage>
   Widget _buildFilters() {
     return Row(
       children: [
-        _buildFilterChip(null, 'Todas'),
+        _buildTypeFilterChip(null, 'Todas'),
         const SizedBox(width: 8),
-        _buildFilterChip(TransactionTypeModel.income, 'Receitas'),
+        _buildTypeFilterChip(TransactionTypeModel.income, 'Receitas'),
         const SizedBox(width: 8),
-        _buildFilterChip(TransactionTypeModel.expense, 'Despesas'),
+        _buildTypeFilterChip(TransactionTypeModel.expense, 'Despesas'),
+        const SizedBox(width: 16),
+        Container(height: 24, width: 1, color: Colors.grey.shade300),
+        const SizedBox(width: 16),
+        PopupMenuButton<TransactionCategoryModel?>(
+          onSelected: (cat) => setState(() => _filterCategory = cat),
+          itemBuilder: (context) => [
+            const PopupMenuItem(value: null, child: Text('Todas Categorias')),
+            ...TransactionCategoryModel.values.map(
+              (c) => PopupMenuItem(
+                value: c,
+                child: Row(
+                  children: [
+                    Container(
+                      width: 12,
+                      height: 12,
+                      decoration: BoxDecoration(
+                        color: CategoryHelper.getColor(c),
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Text(CategoryHelper.getName(c)),
+                  ],
+                ),
+              ),
+            ),
+          ],
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            decoration: BoxDecoration(
+              color: _filterCategory != null
+                  ? AppTheme.primaryColor.withValues(alpha: 0.1)
+                  : Colors.white,
+              borderRadius: BorderRadius.circular(4),
+              border: Border.all(
+                color: _filterCategory != null
+                    ? AppTheme.primaryColor
+                    : Colors.grey.shade300,
+              ),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  _filterCategory != null
+                      ? CategoryHelper.getIcon(_filterCategory!)
+                      : Icons.category,
+                  size: 16,
+                  color: _filterCategory != null
+                      ? AppTheme.primaryColor
+                      : Colors.grey,
+                ),
+                const SizedBox(width: 6),
+                Text(
+                  _filterCategory != null
+                      ? CategoryHelper.getName(_filterCategory!)
+                      : 'Categoria',
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: _filterCategory != null
+                        ? AppTheme.primaryColor
+                        : Colors.grey.shade600,
+                  ),
+                ),
+                const SizedBox(width: 4),
+                Icon(
+                  Icons.arrow_drop_down,
+                  size: 18,
+                  color: _filterCategory != null
+                      ? AppTheme.primaryColor
+                      : Colors.grey,
+                ),
+              ],
+            ),
+          ),
+        ),
       ],
     );
   }
 
-  Widget _buildFilterChip(TransactionTypeModel? type, String label) {
+  Widget _buildTypeFilterChip(TransactionTypeModel? type, String label) {
     final isSelected = _filterType == type;
     return FilterChip(
       label: Text(label),
@@ -738,7 +838,9 @@ class _FinancialPageState extends State<FinancialPage>
                   style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
                 ),
                 const SizedBox(height: 12),
-                Expanded(child: FinancialCharts(transactions: _transactions)),
+                Expanded(
+                  child: FinancialCharts(transactions: _monthlyTransactions),
+                ),
               ],
             ),
           ),
@@ -869,7 +971,9 @@ class _FinancialPageState extends State<FinancialPage>
                       ),
                       const SizedBox(height: 16),
                       Expanded(
-                        child: FinancialCharts(transactions: _transactions),
+                        child: FinancialCharts(
+                          transactions: _monthlyTransactions,
+                        ),
                       ),
                     ],
                   ),

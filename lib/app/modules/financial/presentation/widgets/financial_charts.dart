@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../../core/helpers/category_helper.dart';
 import '../../data/models/transaction_model.dart';
 
 class FinancialCharts extends StatelessWidget {
@@ -46,13 +47,8 @@ class FinancialCharts extends StatelessWidget {
       }
     }
 
-    categories[TransactionCategoryModel.food] = 350;
-    categories[TransactionCategoryModel.transport] = 45;
-    categories[TransactionCategoryModel.entertainment] = 55.90;
-    categories[TransactionCategoryModel.bills] = 200;
-
     return categories.entries
-        .where((e) => (e.value as double) > 0)
+        .where((e) => e.value > 0)
         .map((e) => {'category': e.key, 'value': e.value})
         .toList();
   }
@@ -63,7 +59,6 @@ class FinancialCharts extends StatelessWidget {
       runSpacing: 8,
       children: expenses.map((e) {
         final category = e['category'] as TransactionCategoryModel;
-        final value = e['value'] as double;
         return SizedBox(
           width: 100,
           child: Row(
@@ -72,14 +67,14 @@ class FinancialCharts extends StatelessWidget {
                 width: 10,
                 height: 10,
                 decoration: BoxDecoration(
-                  color: _getCategoryColor(category),
+                  color: CategoryHelper.getColor(category),
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
               const SizedBox(width: 4),
               Expanded(
                 child: Text(
-                  _getCategoryName(category),
+                  CategoryHelper.getName(category),
                   style: const TextStyle(fontSize: 10),
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -89,56 +84,6 @@ class FinancialCharts extends StatelessWidget {
         );
       }).toList(),
     );
-  }
-
-  Color _getCategoryColor(TransactionCategoryModel category) {
-    switch (category) {
-      case TransactionCategoryModel.salary:
-        return Colors.blue;
-      case TransactionCategoryModel.investment:
-        return Colors.green;
-      case TransactionCategoryModel.food:
-        return Colors.orange;
-      case TransactionCategoryModel.transport:
-        return Colors.purple;
-      case TransactionCategoryModel.entertainment:
-        return Colors.pink;
-      case TransactionCategoryModel.health:
-        return Colors.red;
-      case TransactionCategoryModel.education:
-        return Colors.teal;
-      case TransactionCategoryModel.shopping:
-        return Colors.amber;
-      case TransactionCategoryModel.bills:
-        return Colors.brown;
-      case TransactionCategoryModel.other:
-        return Colors.grey;
-    }
-  }
-
-  String _getCategoryName(TransactionCategoryModel category) {
-    switch (category) {
-      case TransactionCategoryModel.salary:
-        return 'Salário';
-      case TransactionCategoryModel.investment:
-        return 'Investimento';
-      case TransactionCategoryModel.food:
-        return 'Alimentação';
-      case TransactionCategoryModel.transport:
-        return 'Transporte';
-      case TransactionCategoryModel.entertainment:
-        return 'Entretenimento';
-      case TransactionCategoryModel.health:
-        return 'Saúde';
-      case TransactionCategoryModel.education:
-        return 'Educação';
-      case TransactionCategoryModel.shopping:
-        return 'Compras';
-      case TransactionCategoryModel.bills:
-        return 'Contas';
-      case TransactionCategoryModel.other:
-        return 'Outros';
-    }
   }
 }
 

@@ -1,20 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:fl_chart/fl_chart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:pdf/pdf.dart';
-import 'package:pdf/widgets.dart' as pw;
-import 'package:path_provider/path_provider.dart';
-import 'dart:io';
 import 'firebase_options.dart';
 import 'app/core/services/database_service.dart';
 import 'app/core/services/firebase_service.dart';
 import 'app/core/services/theme_service.dart';
 import 'app/core/services/update_service.dart';
 import 'app/core/services/tray_service.dart';
-import 'app/core/theme/app_theme.dart';
-import 'app/modules/financial/data/models/transaction_model.dart';
 import 'app/modules/financial/presentation/pages/financial_page.dart';
 import 'app/modules/habits/presentation/pages/habits_page.dart';
 import 'app/modules/dashboard/presentation/pages/dashboard_page.dart';
@@ -224,7 +217,6 @@ class _LoginPageState extends State<LoginPage> {
     if (mounted) {
       setState(() {
         _emailController.text = prefs.getString('saved_email') ?? '';
-        _passwordController.text = prefs.getString('saved_password') ?? '';
         _rememberMe = prefs.getBool('remember_me') ?? false;
       });
     }
@@ -234,11 +226,9 @@ class _LoginPageState extends State<LoginPage> {
     final prefs = await SharedPreferences.getInstance();
     if (_rememberMe) {
       await prefs.setString('saved_email', _emailController.text.trim());
-      await prefs.setString('saved_password', _passwordController.text);
       await prefs.setBool('remember_me', true);
     } else {
       await prefs.remove('saved_email');
-      await prefs.remove('saved_password');
       await prefs.setBool('remember_me', false);
     }
   }
@@ -386,7 +376,7 @@ class _LoginPageState extends State<LoginPage> {
                         });
                       },
                       title: const Text(
-                        'Lembrar usuário e senha',
+                        'Lembrar email',
                         style: TextStyle(fontSize: 14),
                       ),
                       controlAffinity: ListTileControlAffinity.leading,
@@ -485,176 +475,183 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isSmallScreen = screenWidth < 800;
     final sidebarWidth = _isExpanded ? 240.0 : 80.0;
     final bgColor = _isDark ? const Color(0xFF1E1E2E) : Colors.white;
     final textColor = _isDark ? Colors.white : Colors.black87;
     final secondaryColor = _isDark ? Colors.white70 : Colors.grey;
 
+    if (isSmallScreen) {
+      _isExpanded = false;
+    }
+
     return Scaffold(
       body: Row(
         children: [
-          AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            width: sidebarWidth,
-            decoration: BoxDecoration(
-              color: bgColor,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withAlpha(13),
-                  blurRadius: 10,
-                  offset: const Offset(2, 0),
-                ),
-              ],
-            ),
-            child: Column(
-              children: [
-                Container(
-                  height: 70,
-                  padding: EdgeInsets.all(_isExpanded ? 16 : 8),
-                  child: _isExpanded
-                      ? Row(
-                          children: [
-                            Container(
-                              width: 40,
-                              height: 40,
-                              decoration: BoxDecoration(
-                                gradient: const LinearGradient(
-                                  colors: [
-                                    Color(0xFF6C63FF),
-                                    Color(0xFF8B7CF6),
-                                  ],
+          if (!isSmallScreen)
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              width: sidebarWidth,
+              decoration: BoxDecoration(
+                color: bgColor,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withAlpha(13),
+                    blurRadius: 10,
+                    offset: const Offset(2, 0),
+                  ),
+                ],
+              ),
+              child: Column(
+                children: [
+                  Container(
+                    height: 70,
+                    padding: EdgeInsets.all(_isExpanded ? 16 : 8),
+                    child: _isExpanded
+                        ? Row(
+                            children: [
+                              Container(
+                                width: 40,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                  gradient: const LinearGradient(
+                                    colors: [
+                                      Color(0xFF6C63FF),
+                                      Color(0xFF8B7CF6),
+                                    ],
+                                  ),
+                                  borderRadius: BorderRadius.circular(4),
                                 ),
-                                borderRadius: BorderRadius.circular(4),
+                                child: const Icon(
+                                  Icons.bolt,
+                                  color: Colors.white,
+                                  size: 24,
+                                ),
                               ),
-                              child: const Icon(
-                                Icons.bolt,
-                                color: Colors.white,
-                                size: 24,
+                              const SizedBox(width: 12),
+                              Text(
+                                'Equily',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: textColor,
+                                ),
                               ),
-                            ),
-                            const SizedBox(width: 12),
-                            Text(
-                              'Equily',
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                color: textColor,
+                            ],
+                          )
+                        : Container(
+                            width: 40,
+                            height: 40,
+                            decoration: BoxDecoration(
+                              gradient: const LinearGradient(
+                                colors: [Color(0xFF6C63FF), Color(0xFF8B7CF6)],
                               ),
+                              borderRadius: BorderRadius.circular(4),
                             ),
-                          ],
-                        )
-                      : Container(
-                          width: 40,
-                          height: 40,
-                          decoration: BoxDecoration(
-                            gradient: const LinearGradient(
-                              colors: [Color(0xFF6C63FF), Color(0xFF8B7CF6)],
+                            child: const Icon(
+                              Icons.bolt,
+                              color: Colors.white,
+                              size: 24,
                             ),
-                            borderRadius: BorderRadius.circular(4),
                           ),
-                          child: const Icon(
-                            Icons.bolt,
-                            color: Colors.white,
-                            size: 24,
-                          ),
+                  ),
+                  const Divider(height: 1),
+                  Expanded(
+                    child: ListView(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      children: [
+                        _buildNavItem(
+                          0,
+                          Icons.dashboard,
+                          'Dashboard',
+                          textColor,
+                          secondaryColor,
                         ),
-                ),
-                const Divider(height: 1),
-                Expanded(
-                  child: ListView(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    children: [
-                      _buildNavItem(
-                        0,
-                        Icons.dashboard,
-                        'Dashboard',
-                        textColor,
-                        secondaryColor,
-                      ),
-                      _buildNavItem(
-                        1,
-                        Icons.account_balance_wallet,
-                        'Financeiro',
-                        textColor,
-                        secondaryColor,
-                      ),
-                      _buildNavItem(
-                        3,
-                        Icons.check_circle,
-                        'Hábitos',
-                        textColor,
-                        secondaryColor,
-                      ),
-                      if (_isExpanded) ...[
-                        const SizedBox(height: 8),
-                        const Divider(),
-                        const SizedBox(height: 8),
+                        _buildNavItem(
+                          1,
+                          Icons.account_balance_wallet,
+                          'Financeiro',
+                          textColor,
+                          secondaryColor,
+                        ),
+                        _buildNavItem(
+                          3,
+                          Icons.check_circle,
+                          'Hábitos',
+                          textColor,
+                          secondaryColor,
+                        ),
+                        if (_isExpanded) ...[
+                          const SizedBox(height: 8),
+                          const Divider(),
+                          const SizedBox(height: 8),
+                        ],
+                        _buildNavItem(
+                          2,
+                          Icons.settings,
+                          'Configurações',
+                          textColor,
+                          secondaryColor,
+                        ),
                       ],
-                      _buildNavItem(
-                        2,
-                        Icons.settings,
-                        'Configurações',
-                        textColor,
-                        secondaryColor,
-                      ),
-                    ],
+                    ),
                   ),
-                ),
-                ListTile(
-                  leading: Icon(
-                    _isDark ? Icons.light_mode : Icons.dark_mode,
-                    color: _isDark ? Colors.amber : secondaryColor,
-                    size: 18,
+                  ListTile(
+                    leading: Icon(
+                      _isDark ? Icons.light_mode : Icons.dark_mode,
+                      color: _isDark ? Colors.amber : secondaryColor,
+                      size: 18,
+                    ),
+                    title: _isExpanded
+                        ? Text(
+                            _isDark ? 'Modo Claro' : 'Modo Escuro',
+                            style: TextStyle(color: textColor, fontSize: 13),
+                          )
+                        : null,
+                    onTap: _toggleTheme,
+                    dense: true,
+                    minLeadingWidth: 20,
+                    contentPadding: EdgeInsets.zero,
                   ),
-                  title: _isExpanded
-                      ? Text(
-                          _isDark ? 'Modo Claro' : 'Modo Escuro',
-                          style: TextStyle(color: textColor, fontSize: 13),
-                        )
-                      : null,
-                  onTap: _toggleTheme,
-                  dense: true,
-                  minLeadingWidth: 20,
-                  contentPadding: EdgeInsets.zero,
-                ),
-                ListTile(
-                  leading: const Icon(
-                    Icons.logout,
-                    color: Colors.red,
-                    size: 18,
+                  ListTile(
+                    leading: const Icon(
+                      Icons.logout,
+                      color: Colors.red,
+                      size: 18,
+                    ),
+                    title: _isExpanded
+                        ? const Text(
+                            'Sair',
+                            style: TextStyle(color: Colors.red, fontSize: 13),
+                          )
+                        : null,
+                    onTap: () async {
+                      await FirebaseAuth.instance.signOut();
+                      if (mounted)
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (_) => const LoginPage()),
+                        );
+                    },
+                    dense: true,
+                    minLeadingWidth: 20,
+                    contentPadding: EdgeInsets.zero,
                   ),
-                  title: _isExpanded
-                      ? const Text(
-                          'Sair',
-                          style: TextStyle(color: Colors.red, fontSize: 13),
-                        )
-                      : null,
-                  onTap: () async {
-                    await FirebaseAuth.instance.signOut();
-                    if (mounted)
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (_) => const LoginPage()),
-                      );
-                  },
-                  dense: true,
-                  minLeadingWidth: 20,
-                  contentPadding: EdgeInsets.zero,
-                ),
-                ListTile(
-                  leading: Icon(
-                    _isExpanded ? Icons.chevron_left : Icons.chevron_right,
-                    color: secondaryColor,
-                    size: 18,
+                  ListTile(
+                    leading: Icon(
+                      _isExpanded ? Icons.chevron_left : Icons.chevron_right,
+                      color: secondaryColor,
+                      size: 18,
+                    ),
+                    onTap: () => setState(() => _isExpanded = !_isExpanded),
+                    dense: true,
+                    minLeadingWidth: 20,
+                    contentPadding: EdgeInsets.zero,
                   ),
-                  onTap: () => setState(() => _isExpanded = !_isExpanded),
-                  dense: true,
-                  minLeadingWidth: 20,
-                  contentPadding: EdgeInsets.zero,
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
           Expanded(
             child: _selectedModule == 0
                 ? const DashboardPage()

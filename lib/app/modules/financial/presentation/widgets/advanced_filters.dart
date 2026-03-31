@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../../../core/theme/app_theme.dart';
+import '../../../../../core/helpers/category_helper.dart';
 import '../../data/models/transaction_model.dart';
 import '../../data/models/account_model.dart';
 
@@ -300,9 +301,19 @@ class _AdvancedFiltersState extends State<AdvancedFilters> {
                     ...TransactionCategoryModel.values.map(
                       (c) => DropdownMenuItem(
                         value: c,
-                        child: Text(
-                          _getCategoryName(c),
-                          style: const TextStyle(fontSize: 13),
+                        child: Row(
+                          children: [
+                            Icon(
+                              CategoryHelper.getIcon(c),
+                              size: 16,
+                              color: CategoryHelper.getColor(c),
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              CategoryHelper.getName(c),
+                              style: const TextStyle(fontSize: 13),
+                            ),
+                          ],
                         ),
                       ),
                     ),
@@ -353,30 +364,5 @@ class _AdvancedFiltersState extends State<AdvancedFilters> {
         ],
       ),
     );
-  }
-
-  String _getCategoryName(TransactionCategoryModel category) {
-    switch (category) {
-      case TransactionCategoryModel.salary:
-        return 'Salário';
-      case TransactionCategoryModel.investment:
-        return 'Investimento';
-      case TransactionCategoryModel.food:
-        return 'Alimentação';
-      case TransactionCategoryModel.transport:
-        return 'Transporte';
-      case TransactionCategoryModel.entertainment:
-        return 'Entretenimento';
-      case TransactionCategoryModel.health:
-        return 'Saúde';
-      case TransactionCategoryModel.education:
-        return 'Educação';
-      case TransactionCategoryModel.shopping:
-        return 'Compras';
-      case TransactionCategoryModel.bills:
-        return 'Contas';
-      case TransactionCategoryModel.other:
-        return 'Outros';
-    }
   }
 }

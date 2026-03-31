@@ -11,38 +11,37 @@ import '../../modules/financial/data/models/debt_model.dart';
 import '../../modules/habits/data/models/habit_model.dart';
 
 class _CacheBox<T> {
-  final List<T> _items = [];
-  T Function(Map<String, dynamic>) fromMap;
-  Map<String, dynamic> Function(T) toMap;
-  String Function(T) getId;
+  final Map<String, T> _items = {};
+  final String Function(T) getId;
 
-  _CacheBox({required this.fromMap, required this.toMap, required this.getId});
+  _CacheBox({required this.getId});
 
-  List<T> get values => _items;
+  List<T> get values => _items.values.toList();
 
-  void add(T item) => _items.add(item);
+  void add(T item) {
+    _items[getId(item)] = item;
+  }
 
-  void removeWhere(bool Function(T) test) => _items.removeWhere(test);
+  void removeWhere(bool Function(T) test) {
+    _items.removeWhere((_, item) => test(item));
+  }
 
-  int indexWhere(bool Function(T) test) => _items.indexWhere(test);
-
-  void operator []=(int index, T item) => _items[index] = item;
+  T? getById(String id) => _items[id];
 
   void clear() => _items.clear();
 
-  void addAll(Iterable<T> items) => _items.addAll(items);
-
-  Future<void> put(String id, T item) async {
-    final index = _items.indexWhere((i) => getId(i) == id);
-    if (index != -1) {
-      _items[index] = item;
-    } else {
-      _items.add(item);
+  void addAll(Iterable<T> items) {
+    for (final item in items) {
+      _items[getId(item)] = item;
     }
   }
 
+  Future<void> put(String id, T item) async {
+    _items[id] = item;
+  }
+
   Future<void> delete(String id) async {
-    _items.removeWhere((i) => getId(i) == id);
+    _items.remove(id);
   }
 }
 
@@ -58,53 +57,31 @@ class DatabaseService {
   static const String settingsBox = 'settings';
 
   static final _CacheBox<TransactionModel> _transactionsCache =
-      _CacheBox<TransactionModel>(
-        fromMap: TransactionModel.fromMap,
-        toMap: (t) => t.toMap(),
-        getId: (t) => t.id,
-      );
+      _CacheBox<TransactionModel>(getId: (t) => t.id);
 
   static final _CacheBox<AccountModel> _accountsCache = _CacheBox<AccountModel>(
-    fromMap: AccountModel.fromMap,
-    toMap: (a) => a.toMap(),
     getId: (a) => a.id,
   );
 
   static final _CacheBox<GoalModel> _goalsCache = _CacheBox<GoalModel>(
-    fromMap: GoalModel.fromMap,
-    toMap: (g) => g.toMap(),
     getId: (g) => g.id,
   );
 
   static final _CacheBox<BudgetModel> _budgetsCache = _CacheBox<BudgetModel>(
-    fromMap: BudgetModel.fromMap,
-    toMap: (b) => b.toMap(),
     getId: (b) => b.id,
   );
 
   static final _CacheBox<RecurringTransactionModel> _recurringCache =
-      _CacheBox<RecurringTransactionModel>(
-        fromMap: RecurringTransactionModel.fromMap,
-        toMap: (r) => r.toMap(),
-        getId: (r) => r.id,
-      );
+      _CacheBox<RecurringTransactionModel>(getId: (r) => r.id);
 
   static final _CacheBox<ReminderModel> _remindersCache =
-      _CacheBox<ReminderModel>(
-        fromMap: ReminderModel.fromMap,
-        toMap: (r) => r.toMap(),
-        getId: (r) => r.id,
-      );
+      _CacheBox<ReminderModel>(getId: (r) => r.id);
 
   static final _CacheBox<DebtModel> _debtsCache = _CacheBox<DebtModel>(
-    fromMap: DebtModel.fromMap,
-    toMap: (d) => d.toMap(),
     getId: (d) => d.id,
   );
 
   static final _CacheBox<HabitModel> _habitsCache = _CacheBox<HabitModel>(
-    fromMap: HabitModel.fromMap,
-    toMap: (h) => h.toMap(),
     getId: (h) => h.id,
   );
 
@@ -200,15 +177,12 @@ class DatabaseService {
       transaction.id,
       transaction.toMap(),
     );
-    final index = _transactionsCache.indexWhere((t) => t.id == transaction.id);
-    if (index != -1) {
-      _transactionsCache[index] = transaction;
-    }
+    _transactionsCache.put(transaction.id, transaction);
   }
 
   static Future<void> deleteTransaction(String id) async {
     await FirebaseService.deleteDocument(transactionsBox, id);
-    _transactionsCache.removeWhere((t) => t.id == id);
+    _transactionsCache.delete(id);
   }
 
   // Accounts
@@ -234,15 +208,12 @@ class DatabaseService {
       account.id,
       account.toMap(),
     );
-    final index = _accountsCache.indexWhere((a) => a.id == account.id);
-    if (index != -1) {
-      _accountsCache[index] = account;
-    }
+    _accountsCache.put(account.id, account);
   }
 
   static Future<void> deleteAccount(String id) async {
     await FirebaseService.deleteDocument(accountsBox, id);
-    _accountsCache.removeWhere((a) => a.id == id);
+    _accountsCache.delete(id);
   }
 
   // Goals
@@ -264,15 +235,12 @@ class DatabaseService {
 
   static Future<void> updateGoal(GoalModel goal) async {
     await FirebaseService.updateDocument(goalsBox, goal.id, goal.toMap());
-    final index = _goalsCache.indexWhere((g) => g.id == goal.id);
-    if (index != -1) {
-      _goalsCache[index] = goal;
-    }
+    _goalsCache.put(goal.id, goal);
   }
 
   static Future<void> deleteGoal(String id) async {
     await FirebaseService.deleteDocument(goalsBox, id);
-    _goalsCache.removeWhere((g) => g.id == id);
+    _goalsCache.delete(id);
   }
 
   // Budgets
@@ -294,15 +262,12 @@ class DatabaseService {
 
   static Future<void> updateBudget(BudgetModel budget) async {
     await FirebaseService.updateDocument(budgetsBox, budget.id, budget.toMap());
-    final index = _budgetsCache.indexWhere((b) => b.id == budget.id);
-    if (index != -1) {
-      _budgetsCache[index] = budget;
-    }
+    _budgetsCache.put(budget.id, budget);
   }
 
   static Future<void> deleteBudget(String id) async {
     await FirebaseService.deleteDocument(budgetsBox, id);
-    _budgetsCache.removeWhere((b) => b.id == id);
+    _budgetsCache.delete(id);
   }
 
   // Recurring
@@ -338,15 +303,12 @@ class DatabaseService {
       recurring.id,
       recurring.toMap(),
     );
-    final index = _recurringCache.indexWhere((r) => r.id == recurring.id);
-    if (index != -1) {
-      _recurringCache[index] = recurring;
-    }
+    _recurringCache.put(recurring.id, recurring);
   }
 
   static Future<void> deleteRecurring(String id) async {
     await FirebaseService.deleteDocument(recurringBox, id);
-    _recurringCache.removeWhere((r) => r.id == id);
+    _recurringCache.delete(id);
   }
 
   // Reminders
@@ -376,15 +338,12 @@ class DatabaseService {
       reminder.id,
       reminder.toMap(),
     );
-    final index = _remindersCache.indexWhere((r) => r.id == reminder.id);
-    if (index != -1) {
-      _remindersCache[index] = reminder;
-    }
+    _remindersCache.put(reminder.id, reminder);
   }
 
   static Future<void> deleteReminder(String id) async {
     await FirebaseService.deleteDocument(remindersBox, id);
-    _remindersCache.removeWhere((r) => r.id == id);
+    _remindersCache.delete(id);
   }
 
   // Debts
@@ -406,15 +365,12 @@ class DatabaseService {
 
   static Future<void> updateDebt(DebtModel debt) async {
     await FirebaseService.updateDocument(debtsBox, debt.id, debt.toMap());
-    final index = _debtsCache.indexWhere((d) => d.id == debt.id);
-    if (index != -1) {
-      _debtsCache[index] = debt;
-    }
+    _debtsCache.put(debt.id, debt);
   }
 
   static Future<void> deleteDebt(String id) async {
     await FirebaseService.deleteDocument(debtsBox, id);
-    _debtsCache.removeWhere((d) => d.id == id);
+    _debtsCache.delete(id);
   }
 
   // Habits
@@ -432,15 +388,12 @@ class DatabaseService {
 
   static Future<void> updateHabit(HabitModel habit) async {
     await FirebaseService.updateDocument(habitsBox, habit.id, habit.toMap());
-    final index = _habitsCache.indexWhere((h) => h.id == habit.id);
-    if (index != -1) {
-      _habitsCache[index] = habit;
-    }
+    _habitsCache.put(habit.id, habit);
   }
 
   static Future<void> deleteHabit(String id) async {
     await FirebaseService.deleteDocument(habitsBox, id);
-    _habitsCache.removeWhere((h) => h.id == id);
+    _habitsCache.delete(id);
   }
 
   static Future<String> exportAllData() async {
